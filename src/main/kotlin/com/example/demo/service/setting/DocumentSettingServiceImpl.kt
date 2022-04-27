@@ -102,10 +102,26 @@ class DocumentSettingServiceImpl : DocumentSettingService {
 
     }
 
+    /**
+     * @Using  to get Next code for target Module (Ex: invoice_no, sale_order_series, ...)
+     * @param name of the DocumentSetting name (like: invoice, saleOrder, item, ...)
+     *
+     * @Do
+     *      - update last_code +1
+     *      - and return hold Model of DocumentSetting (in only one transaction)
+     *
+     * @throws CustomNotFoundException in case the given name not exist in DocumentSetting table.
+     *
+     * @return seriesFormat (Prefix + LastCode) ex:(INV-00001, SO-00002, ...)
+     */
     @Transactional
     fun getNextSeries (name: String) : String{
-        val series = jdbcTemplate.queryForObject("UPDATE document_setting SET last_code = last_code+1 WHERE name ='$name' RETURNING id,name, suffix, prefix, last_code, description", BeanPropertyRowMapper(
-            DocumentSetting::class.java)) ?: throw CustomNotFoundException("$name next series not found.")
+        val series = jdbcTemplate.queryForObject("UPDATE document_setting SET last_code = last_code+1 " +
+                                                      "WHERE name ='$name' RETURNING id,name, suffix, prefix, last_code, description",
+
+            BeanPropertyRowMapper(DocumentSetting::class.java))
+            ?: throw CustomNotFoundException("$name next series not found.")
+
         return seriesFormat(series.lastCode,series.prefix, series.length)
     }
 
