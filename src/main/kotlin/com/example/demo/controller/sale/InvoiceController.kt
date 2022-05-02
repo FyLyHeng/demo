@@ -2,6 +2,7 @@ package com.example.demo.controller.sale
 
 import com.example.demo.base.GenericRestfulController
 import com.example.demo.model.sale.Invoice
+import com.example.demo.responseFormat.response.ResponseDTO
 import com.example.demo.service.sale.InvoiceServiceImp
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant
@@ -10,11 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping(AppConstant.MAIN_PATH+"/invoice")
-class InvoiceController : GenericRestfulController<Invoice>(){
+class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java){
 
     @Autowired
     lateinit var stockTransactionService: StockTransactionServiceImp
@@ -37,14 +37,14 @@ class InvoiceController : GenericRestfulController<Invoice>(){
     override fun afterSaved(entity: Invoice) {
         entity.invoiceDetail?.forEach {
             stockTransactionService.recordStockTransaction(
-                it.item!!, it.qty!!, Date(), entity.invoiceNo
+                it.item!!, it.qty!!, ref = entity.invoiceNo
             )
         }
     }
 
     @GetMapping(AppConstant.LIST_DTO_PATH)
-    fun listInvoiceDTO (@RequestParam allParams: MutableMap<String, String>): MutableMap<String, Any> {
+    fun listInvoiceDTO (@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
         val rs = invoiceService.findAllList(allParams)
-        return response.responseObject(rs.content, rs.totalElements)
+        return JSONFormat.respondPage(rs)
     }
 }

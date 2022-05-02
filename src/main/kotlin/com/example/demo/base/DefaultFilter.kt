@@ -1,4 +1,4 @@
-package com.ig.erp.base
+package com.example.demo.base
 
 import org.springframework.data.domain.Sort
 

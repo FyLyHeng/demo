@@ -1,4 +1,4 @@
-package com.ig.erp.base
+package com.example.demo.base
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedBy
@@ -53,5 +53,9 @@ open class BaseEntity {
     @PreDestroy
     protected fun onDelete() {
         status = false
+    }
+
+    companion object {
+
     }
 }

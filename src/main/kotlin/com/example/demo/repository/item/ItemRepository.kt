@@ -4,6 +4,6 @@ import com.example.demo.model.item.Item
 import com.example.demo.base.BaseRepository
 import org.springframework.stereotype.Repository
 
-@Repository
+//@Repository
 interface ItemRepository : BaseRepository<Item> {
 }

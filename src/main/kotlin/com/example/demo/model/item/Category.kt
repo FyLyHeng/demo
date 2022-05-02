@@ -1,6 +1,7 @@
 package com.example.demo.model.item
 
-import com.ig.erp.base.BaseEntity
+import com.example.demo.base.BaseEntity
+import org.hibernate.Hibernate
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -10,6 +11,6 @@ import javax.persistence.Id
 data class Category (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id:Long?,
-    var name:String?
-):BaseEntity()
+    var id:Long?=null,
+    var name:String?=null
+): BaseEntity()

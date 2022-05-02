@@ -3,7 +3,7 @@ package com.example.demo.controller.item
 import com.example.demo.base.GenericRestfulController
 import com.example.demo.model.item.Item
 import com.example.demo.repository.item.CategoryRepository
-import com.example.demo.responseFormat.exception.CustomNotFoundException
+import com.example.demo.responseFormat.exception.entityExecption.NotFoundException
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ import java.util.*
 
 @RestController
 @RequestMapping(AppConstant.MAIN_PATH+"/item")
-class ItemController : GenericRestfulController<Item>(){
+class ItemController : GenericRestfulController<Item>(Item::class.java){
 
     @Autowired
     lateinit var categoryRepo : CategoryRepository
@@ -24,8 +24,13 @@ class ItemController : GenericRestfulController<Item>(){
         val cat = categoryRepo.findById(entity.category!!.id!!)
         if (cat.isEmpty){
             println("isEmpty")
-            throw CustomNotFoundException("Category not exist.")
+            throw NotFoundException("Category not exist.")
         }
+    }
+
+    override fun create(entity: Item): Item? {
+        entity.name = "liza"
+        return super.create(entity)
     }
 
     override fun afterSaved(entity: Item) {

@@ -1,6 +1,6 @@
 package com.example.demo.model.item
 
-import com.ig.erp.base.BaseEntity
+import com.example.demo.base.BaseEntity
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -12,9 +12,9 @@ import javax.persistence.OneToOne
 data class Item (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id:Long?,
-    var name:String?,
+    var id:Long?=null,
+    var name:String?=null,
     var price:Double?=0.0,
     @OneToOne
     var category : Category?=null
-):BaseEntity()
+): BaseEntity()

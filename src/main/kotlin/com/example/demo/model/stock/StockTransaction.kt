@@ -1,7 +1,7 @@
 package com.example.demo.model.stock
 
 import com.example.demo.model.item.Item
-import com.ig.erp.base.BaseEntity
+import com.example.demo.base.BaseEntity
 import java.util.Date
 import javax.persistence.*
 
@@ -15,4 +15,4 @@ data class StockTransaction(
     var referenceNo:String?,
     @OneToOne(fetch = FetchType.LAZY)
     var item: Item,
-):BaseEntity()
+): BaseEntity()

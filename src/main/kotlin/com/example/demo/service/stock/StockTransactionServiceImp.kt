@@ -23,7 +23,7 @@ class StockTransactionServiceImp {
      *
      * @return void
      */
-    fun recordStockTransaction (item: Item,qty:Int, eventDate: Date?,ref:String?="") {
+    fun recordStockTransaction (item: Item,qty:Int, eventDate: Date?=Date(),ref:String?="") {
         stockRepository.save(StockTransaction(item = item, qty = qty, date = eventDate, referenceNo = ref))
     }
 

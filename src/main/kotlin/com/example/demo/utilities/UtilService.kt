@@ -1,15 +1,17 @@
 package com.example.demo.utilities
 
-import com.ig.erp.base.BaseEntity
+import com.example.demo.base.BaseEntity
 import org.springframework.beans.BeanUtils
 import org.springframework.stereotype.Component
 import java.lang.Double.parseDouble
 import java.lang.reflect.Field
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
+import kotlin.reflect.KProperty1
 
 @Component
 class UtilService {
@@ -87,6 +89,8 @@ class UtilService {
     /**
      * @param obj <T>
      * @param targetField : field that wish to access value
+     *
+     * TODO rename to readInstanceProperty()
      */
     fun getValueFromField(obj: Any, targetField: String) : String? {
         try {
@@ -113,4 +117,20 @@ class UtilService {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun <R> readInstanceProperty(instance: Any, propertyName: String): R {
+        val property = instance::class.members
+            .first { it.name == propertyName } as KProperty1<Any, *>
+        return property.get(instance) as R
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun getInstanceName(instance: Any): String? {
+        return instance::class.simpleName?.lowercase(Locale.getDefault())
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T>getInstanceName(instance: Class<T>): String? {
+        return instance.simpleName.lowercase(Locale.getDefault())
+    }
 }

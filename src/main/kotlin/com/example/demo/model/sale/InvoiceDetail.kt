@@ -2,7 +2,7 @@ package com.example.demo.model.sale
 
 import com.example.demo.model.item.Item
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.ig.erp.base.BaseEntity
+import com.example.demo.base.BaseEntity
 import javax.persistence.*
 
 
@@ -23,4 +23,4 @@ data class InvoiceDetail(
     var invoice : Invoice?= null
 
 
-):BaseEntity()
+): BaseEntity()

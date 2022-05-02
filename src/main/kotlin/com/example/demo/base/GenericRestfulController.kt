@@ -1,33 +1,34 @@
 package com.example.demo.base
 
-import com.example.demo.responseFormat.exception.CustomNotFoundException
+import com.example.demo.responseFormat.exception.entityExecption.NotFoundException
 import com.example.demo.service.setting.DocumentSettingServiceImpl
 import com.example.demo.utilities.AppConstant
 import com.example.demo.utilities.UtilService
-import com.ig.erp.base.BaseEntity
-import com.ig.erp.base.DefaultFilter
-import com.example.demo.responseFormat.response.BaseResponse
-import com.example.demo.responseFormat.response.ResponseObject
-import com.example.demo.responseFormat.response.ResponseObjectMap
+import com.example.demo.responseFormat.response.JSONFormat
+import com.example.demo.responseFormat.response.ResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
 
-open class GenericRestfulController<T : BaseEntity> : DefaultFilter(){
+open class GenericRestfulController<T : BaseEntity>(private val resource: Class<T>) : DefaultFilter() {
 
-    val response = ResponseObjectMap()
     @Autowired
-    val repo: BaseRepository<T>? = null
+    protected val JSONFormat = JSONFormat()
+    @Autowired
+    protected val repo: BaseRepository<T>? = null
     @Autowired
     lateinit var utilService: UtilService
     @Autowired
     lateinit var documentSettingService: DocumentSettingServiceImpl
+    protected var resourceName = resource.simpleName
 
 
     /**
@@ -38,90 +39,84 @@ open class GenericRestfulController<T : BaseEntity> : DefaultFilter(){
      */
 
     @PostMapping
-    private fun baseCreate(@RequestBody entity: T): MutableMap<String, Any> {
+    private fun baseCreate(@RequestBody entity: T): ResponseDTO {
 
         this.beforeSave(entity)
         val obj = repo?.save(create(entity)!!)!!
         this.afterSaved(obj)
-        return response.responseObject(obj)
+        return JSONFormat.respondID(obj)
     }
 
     @PostMapping("/multi")
-    private fun baseCreateMulti(@RequestBody entities: MutableList<T>): MutableMap<String, Any> {
-        return response.responseObject(repo?.saveAll(createMulti(entities)))
+    private fun baseCreateMulti(@RequestBody entities: MutableList<T>): ResponseDTO {
+        return JSONFormat.respondID(repo?.saveAll(createMulti(entities)))
     }
 
 
     @PutMapping("{id}")
-    private fun baseUpdate(@PathVariable(value = "id") id: Long, @RequestBody entity: T?): MutableMap<String, Any> {
+    private fun baseUpdate(@PathVariable(value = "id") id: Long, @RequestBody entity: T?): ResponseDTO {
 
         this.beforeUpdate(entity!!)
         val obj = repo?.save(update(id, entity)!!)!!
         this.afterUpdated(obj)
-        return response.responseObject(obj)
+        return JSONFormat.respondID(obj)
     }
 
     @PutMapping("/multi")
-    private fun baseUpdateMulti( @RequestBody entities: MutableList<T>): MutableMap<String, Any> {
+    private fun baseUpdateMulti( @RequestBody entities: MutableList<T>): ResponseDTO {
 
         val obj = repo?.saveAll(updateMulti(entities))
-        return response.responseObject(obj)
+        return JSONFormat.respondID(obj)
     }
 
 
     @DeleteMapping("{id}")
-    private fun baseDelete(@PathVariable(value = "id") id: Long): ResponseObject {
+    private fun baseDelete(@PathVariable(value = "id") id: Long): ResponseDTO {
         delete(id)
-        return response.responseObject.success()
+        return JSONFormat.respondObj(null, status = HttpStatus.OK)
     }
 
     @PutMapping("/delete")
-    private fun baseDelete(@RequestBody listEntity: MutableList<T>) : MutableMap<String, Any> {
-        return response.responseObject(this.softDelete(listEntity))
+    private fun baseDelete(@RequestBody listEntity: MutableList<T>) : ResponseDTO {
+        return JSONFormat.respondObj(null)
     }
 
 
     @GetMapping("{id}")
-    private fun baseGet(@PathVariable(value = "id") id: Long): MutableMap<String, Any> {
-        return response.responseObject(get(id))
+    private fun baseGet(@PathVariable(value = "id") id: Long): ResponseDTO {
+        return JSONFormat.respondObj(get(id))
     }
 
 
     @GetMapping(AppConstant.ALL_PATH)
-    private fun baseAll(@RequestParam allParams: MutableMap<String, String>): MutableMap<String, Any> {
-        return response.responseObject(all(allParams))
+    private fun baseAll(@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
+        return JSONFormat.respondList(all(allParams))
     }
 
 
     @GetMapping(AppConstant.LIST_PATH)
-    private fun baseListCriteria(@RequestParam allParams: Map<String, String>): MutableMap<String, Any> {
-        val rs = listCriteria(allParams)
-        return response.responseObject(rs!!.content, rs.totalElements)
+    private fun baseListCriteria(@RequestParam allParams: Map<String, String>): ResponseDTO {
+        return JSONFormat.respondPage(listCriteria(allParams))
     }
 
 
     @PutMapping(AppConstant.UPDATE_SUBMIT_PATH +"/{id}")
-    private fun baseUpdateToSubmit(@PathVariable id: Long): BaseResponse {
+    private fun baseUpdateToSubmit(@PathVariable id: Long): ResponseDTO {
         val obj = updateToSubmit(id)
-        repo?.save(obj)
-        val customStatus =  utilService.getValueFromField(obj,FIELD_CUSTOM_STATUS)?:""
-        return BaseResponse(response.responseObject.success(),customStatus)
+        return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
 
     @PutMapping(AppConstant.UPDATE_CANCEL_PATH +"/{id}")
-    private fun baseUpdateToCancel(@PathVariable id: Long): BaseResponse {
+    private fun baseUpdateToCancel(@PathVariable id: Long): ResponseDTO {
         val obj = updateToCancel(id)
-        repo?.save(obj)
-        val customStatus =  utilService.getValueFromField(obj,FIELD_CUSTOM_STATUS)?:""
-        return BaseResponse(response.responseObject.success(),customStatus)
+        return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
     @PutMapping(AppConstant.UPDATE_STATUS_PATH +"/{id}/{customStatus}")
-    fun updateCustomStatus(@PathVariable id : Long, @PathVariable customStatus : String) : BaseResponse {
+    fun updateCustomStatus(@PathVariable id : Long, @PathVariable customStatus : String) : ResponseDTO {
         val obj = updateStatus(id,customStatus)
-        repo?.save(obj)
-        return BaseResponse(response.responseObject.success(),customStatus)
+        return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
 
@@ -173,6 +168,8 @@ open class GenericRestfulController<T : BaseEntity> : DefaultFilter(){
 
 
     open fun update(id: Long, entity: T): T? {
+
+        utilService.readInstanceProperty<T>(entity,"")
         val obj= this.get(id)!!
         utilService.bindProperties(entity, obj)
         return obj
@@ -255,18 +252,22 @@ open class GenericRestfulController<T : BaseEntity> : DefaultFilter(){
 
         val result = repo?.findAllByIdInAndStatus(listEntityID,true)
 
-        result?.getOrElse(0){ throw CustomNotFoundException( "ids doesn't exists") }
+        result?.getOrElse(0){ throw NotFoundException( "ids doesn't exists") }
 
         result?.forEach { it.status = false }
         return repo!!.saveAll(result!!)
     }
 
     open fun delete(id:Long){
-        repo?.deleteById(id)
+        try {
+            repo?.deleteById(id)
+        } catch (ex: EmptyResultDataAccessException){
+            notFound(id)
+        }
     }
 
     open fun get(id: Long): T? {
-        return repo?.findById(id)?.orElseThrow { CustomNotFoundException("id $id doesn't exists") }
+        return repo?.findById(id)?.orElseThrow { notFound(id) }
     }
 
 
@@ -325,6 +326,12 @@ open class GenericRestfulController<T : BaseEntity> : DefaultFilter(){
 
 
 //================================================================================================
+
+    protected fun notFound (id: Long) : NotFoundException {
+        //TODO retrive id without passing vai fun parameter.
+        //val ID = utilService.readInstanceProperty<T>(resource.classes,"id")
+        throw NotFoundException("$resourceName id $id doesn't exists")
+    }
 
     private fun validateFields(entity: T?) : Boolean {
         //entity::class.java.declaredFields

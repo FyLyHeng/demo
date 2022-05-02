@@ -4,5 +4,5 @@ import com.example.demo.model.sale.Invoice
 import com.example.demo.base.BaseRepository
 import org.springframework.stereotype.Repository
 
-@Repository
+//@Repository
 interface InvoiceRepository: BaseRepository<Invoice>

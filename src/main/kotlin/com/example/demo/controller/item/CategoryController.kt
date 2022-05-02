@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(AppConstant.MAIN_PATH+"/category")
-class CategoryController : GenericRestfulController<Category>(){
+class CategoryController : GenericRestfulController<Category>(Category::class.java){
 
 
     override fun afterSaved(entity: Category) {

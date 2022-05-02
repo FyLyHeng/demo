@@ -1,6 +1,6 @@
 package com.example.demo.model.sale
 
-import com.ig.erp.base.BaseEntity
+import com.example.demo.base.BaseEntity
 import java.util.Date
 import javax.persistence.*
 
@@ -9,12 +9,12 @@ data class Invoice(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id:Long?,
-    var invoiceNo:String?,
-    var date: Date?=Date(),
-    var customerName:String?,
-    var subTotal:Double=0.0,
+    var invoiceNo:String?=null,
+    var date: Date,
+    var customerName:String,
+    var subTotal:Double,
     var grandTotal:Double=0.0,
-    var vatAmount:Double?=0.0,
+    var vatAmount:Double,
 
 
     @OneToMany(

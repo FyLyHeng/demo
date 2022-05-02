@@ -3,8 +3,8 @@ package com.example.demo.service.setting
 import com.example.demo.model.setting.DocumentSetting
 import com.example.demo.repository.DocumentSettingRepository
 import com.example.demo.utilities.UtilService
-import com.example.demo.responseFormat.exception.CustomNotAcceptableException
-import com.example.demo.responseFormat.exception.CustomNotFoundException
+import com.example.demo.responseFormat.exception.generalException.NotAcceptableException
+import com.example.demo.responseFormat.exception.entityExecption.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -41,7 +41,7 @@ class DocumentSettingServiceImpl : DocumentSettingService {
 
     override fun findById(id: Long): DocumentSetting? {
         return documentSettingRepository.findByIdAndStatusTrue(id)
-                ?: throw CustomNotFoundException("Series id $id does not exist")
+                ?: throw NotFoundException("Series id $id does not exist")
     }
 
     override fun addNew(t: DocumentSetting): DocumentSetting? {
@@ -63,14 +63,14 @@ class DocumentSettingServiceImpl : DocumentSettingService {
     override fun findAll(): List<DocumentSetting>? = documentSettingRepository.findAllByStatusTrueOrderByIdDesc()
 
     fun checkExceptions(documentSetting: DocumentSetting) {
-        documentSetting.name ?: throw CustomNotAcceptableException("Field name is required")
-        documentSetting.prefix ?: throw CustomNotAcceptableException("Field prefix is required")
+        documentSetting.name ?: throw Exception("Field name is required")
+        documentSetting.prefix ?: throw Exception("Field prefix is required")
     }
 
     @Transactional
     fun getNextSeries(name:String, isIncludeVat:Boolean=false): String {
 
-        val documentSetting = documentSettingRepository.findByName(name) ?: throw CustomNotFoundException("$name next series not found.")
+        val documentSetting = documentSettingRepository.findByName(name) ?: throw NotFoundException("$name next series not found.")
         var prefix : String ?=null
         var lastCode :Int ?= null
 
@@ -110,7 +110,7 @@ class DocumentSettingServiceImpl : DocumentSettingService {
      *      - update last_code +1
      *      - and return hold Model of DocumentSetting (in only one transaction)
      *
-     * @throws CustomNotFoundException in case the given name not exist in DocumentSetting table.
+     * @throws NotFoundException in case the given name not exist in DocumentSetting table.
      *
      * @return seriesFormat (Prefix + LastCode) ex:(INV-00001, SO-00002, ...)
      */
@@ -120,7 +120,7 @@ class DocumentSettingServiceImpl : DocumentSettingService {
                                                       "WHERE name ='$name' RETURNING id,name, suffix, prefix, last_code, description",
 
             BeanPropertyRowMapper(DocumentSetting::class.java))
-            ?: throw CustomNotFoundException("$name next series not found.")
+            ?: throw NotFoundException("$name next series not found.")
 
         return seriesFormat(series.lastCode,series.prefix, series.length)
     }
