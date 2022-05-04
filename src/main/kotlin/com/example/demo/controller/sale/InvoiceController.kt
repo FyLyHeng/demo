@@ -6,6 +6,9 @@ import com.example.demo.responseFormat.response.ResponseDTO
 import com.example.demo.service.sale.InvoiceServiceImp
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
+import io.swagger.annotations.ApiParam
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -43,7 +46,11 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
     }
 
     @GetMapping(AppConstant.LIST_DTO_PATH)
-    fun listInvoiceDTO (@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
+    @ApiImplicitParams(value = [
+        ApiImplicitParam(name = "customerId", required = false, paramType = "query"),
+        ApiImplicitParam(name = "customerName",required = false, paramType = "query")
+    ])
+    fun listInvoiceDTO (@ApiParam(hidden = true) @RequestParam allParams: MutableMap<String, String>): ResponseDTO {
         val rs = invoiceService.findAllList(allParams)
         return JSONFormat.respondPage(rs)
     }

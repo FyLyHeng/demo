@@ -39,7 +39,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
      */
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions( ex: Exception,  request:WebRequest) : ResponseEntity<Any>{
-        val message = ex.message?:"Unexpected Error"
+        val message = ex.message?:ex.cause?.message?:ex.stackTraceToString()
         val status = HttpStatus.INTERNAL_SERVER_ERROR
 
         val body = ResponseDTO.apply {
