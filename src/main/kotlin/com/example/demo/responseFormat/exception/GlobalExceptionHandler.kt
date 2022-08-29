@@ -100,7 +100,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     override fun handleHttpMessageNotReadable(ex: HttpMessageNotReadableException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
 
-        val errors = ex.cause?.message?:"Unexpected Error : JSON parse "
+        val errors = ex.cause?.message?:"Unexpected Error : JSON parse"
 
         val body = ResponseDTO.apply {
             this.data = null
@@ -126,7 +126,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     override fun handleHttpMessageNotWritable(ex: HttpMessageNotWritableException, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
 
-        val errors = ex.cause?.message?:"Unexpected Error : JSON parse "
+        val errors = ex.cause?.message?:"Unexpected Error : JSON parse"
         val body = ResponseDTO.apply {
             this.data = null
             this.code = status.value()
@@ -135,7 +135,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.timestamp = Date()
         }
 
-        this.logger.error(errors)
+        this.logger.error(ex)
         return ResponseEntity(body, headers, status)
     }
 
@@ -158,7 +158,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.error = null
             this.timestamp = Date()
         }
-        this.logger.error(errors)
+        this.logger.error(ex)
         return ResponseEntity(body, status)
     }
 
@@ -176,7 +176,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.error = status.reasonPhrase
             this.timestamp = Date()
         }
-        this.logger.error(errors)
+        this.logger.error(ex)
         return ResponseEntity(body, status)
     }
 }

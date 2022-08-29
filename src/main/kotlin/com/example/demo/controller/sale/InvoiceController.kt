@@ -3,6 +3,7 @@ package com.example.demo.controller.sale
 import com.example.demo.base.GenericRestfulController
 import com.example.demo.model.sale.Invoice
 import com.example.demo.responseFormat.response.ResponseDTO
+import com.example.demo.responseFormat.response.XMLFormat
 import com.example.demo.service.sale.InvoiceServiceImp
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant

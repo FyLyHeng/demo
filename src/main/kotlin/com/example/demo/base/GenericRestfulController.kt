@@ -6,6 +6,8 @@ import com.example.demo.utilities.AppConstant
 import com.example.demo.utilities.UtilService
 import com.example.demo.responseFormat.response.JSONFormat
 import com.example.demo.responseFormat.response.ResponseDTO
+import com.example.demo.responseFormat.response.ResponseFormat
+import com.example.demo.responseFormat.response.XMLFormat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
@@ -18,17 +20,29 @@ import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
 
-open class GenericRestfulController<T : BaseEntity>(private val resource: Class<T>) : DefaultFilter() {
+open class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : DefaultFilter() {
 
     @Autowired
-    protected val JSONFormat = JSONFormat()
+    lateinit var JSONFormat : JSONFormat
     @Autowired
     protected val repo: BaseRepository<T>? = null
     @Autowired
     lateinit var utilService: UtilService
     @Autowired
     lateinit var documentSettingService: DocumentSettingServiceImpl
-    protected var resourceName = resource.simpleName
+
+
+    constructor(resource: Class<T>,allowUpdate: Boolean?=true, allowDelete:Boolean?=true, allowMultiProcess:Boolean?=false) : this(resource) {
+        this.isAllowDelete = allowDelete
+        this.isAllowUpdate = allowUpdate
+        this.isAllowMultiProcess = allowMultiProcess
+    }
+
+    private var isAllowDelete : Boolean?=true
+    private var isAllowUpdate : Boolean?=true
+    private var isAllowMultiProcess : Boolean?=false
+    private var resourceName: String? = resource.javaClass.simpleName
+
 
 
     /**
@@ -259,6 +273,7 @@ open class GenericRestfulController<T : BaseEntity>(private val resource: Class<
     }
 
     open fun delete(id:Long){
+        this.checkAllowModify()
         try {
             repo?.deleteById(id)
         } catch (ex: EmptyResultDataAccessException){
@@ -348,5 +363,16 @@ open class GenericRestfulController<T : BaseEntity>(private val resource: Class<
             }
         }
         predicates.add(cb.isTrue(root.get(STATUS)))
+    }
+
+    private fun checkAllowModify(){
+        when (false){
+            isAllowDelete -> {JSONFormat.respondObj(data = null, status = HttpStatus.NOT_ACCEPTABLE,"Delete Method Is Not Allow!")}
+            isAllowUpdate -> {JSONFormat.respondObj(data = null, status = HttpStatus.NOT_ACCEPTABLE,"Update Method Is Not Allow!")}
+        }
+    }
+
+    private fun checkAllowMultiProcess(){
+
     }
 }

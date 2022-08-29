@@ -8,29 +8,32 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class JSONFormat {
+class JSONFormat : ResponseFormat {
     @Autowired
     lateinit var utilService: UtilService
     @Autowired
-    var ResponseDTO = ResponseDTO()
+    lateinit var ResponseDTO : ResponseDTO
 
     init {
         println("init ${this.toString()}")
     }
-
     fun finalize (){
         println("destroy ${this.toString()}")
     }
 
+    //Static Member
+    companion object {
+        private val DefaultHttpStatus = HttpStatus.OK
+    }
+
     /**
      * Return Single Object ID
-     *
      * Most use in Create & Update Obj APIs
      */
-    fun respondID(data: Any?, status: HttpStatus?=null, message: String?=null): ResponseDTO {
+    override fun respondID(data: Any?, status: HttpStatus?, message: String?): ResponseDTO {
         return ResponseDTO.apply {
             this.data = mapOf("id" to utilService.getValueFromField(data!!, "id"))
-            this.code = status?.value()
+            this.code = (status?.value() ?: DefaultHttpStatus.value())
             this.message = message ?: status?.reasonPhrase!!
             this.total = 1
             this.error =null
@@ -38,10 +41,18 @@ class JSONFormat {
         }
     }
 
-    fun respondCustomStatus(data: Any?, status: HttpStatus?=HttpStatus.OK, message: String?=null): ResponseDTO {
+
+
+
+
+    /**
+     * Return customStatus field of Base Entity
+     * Most Use in Update Status Cancel_Complete
+     */
+    override fun respondCustomStatus(data: Any?, status: HttpStatus?, message: String?): ResponseDTO {
         return ResponseDTO.apply {
             this.data = mapOf("customStatus" to utilService.getValueFromField(data!!, "customStatus"))
-            this.code = status?.value()
+            this.code = (status?.value() ?: DefaultHttpStatus.value())
             this.message = message ?: status?.reasonPhrase
             this.total = 1
             this.error = null
@@ -54,11 +65,11 @@ class JSONFormat {
     /**
      * Return Single Object
      */
-    fun respondObj(data: Any?, status: HttpStatus?=HttpStatus.OK, message: String?=null): ResponseDTO {
+    override fun respondObj(data: Any?, status: HttpStatus?, message: String?): ResponseDTO {
 
         return ResponseDTO.apply {
             this.data = data
-            this.code = status?.value()
+            this.code = (status?.value() ?: DefaultHttpStatus.value())
             this.message = message ?: status?.reasonPhrase
             this.total = 1
             this.error = null
@@ -71,11 +82,12 @@ class JSONFormat {
     /**
      * Return All data in list of Object
      */
-    fun respondList(data: List<Any>?, status: HttpStatus?=HttpStatus.OK, message: String?=null): ResponseDTO {
+    override fun respondList(data: List<Any>?, status: HttpStatus?, message: String?): ResponseDTO {
+
 
         return ResponseDTO.apply {
             this.data = data
-            this.code = status?.value()
+            this.code = (status?.value() ?: DefaultHttpStatus.value())
             this.message = message ?: status?.reasonPhrase
             this.total = data?.size?.toLong()
             this.error = null
@@ -89,12 +101,13 @@ class JSONFormat {
      * Return Page of List of Object
      */
 
-    fun <T: Any> respondPage(data: Page<T>?, status: HttpStatus?=HttpStatus.OK, message: String?=null): ResponseDTO {
+    override fun <T: Any> respondPage(data: Page<T>?, status: HttpStatus?, message: String?): ResponseDTO {
+        println("Form JSON")
 
         return ResponseDTO.apply {
             this.data = data?.content
             this.total = data?.totalElements
-            this.code = status?.value()
+            this.code = (status?.value() ?: DefaultHttpStatus.value())
             this.message = message ?: status?.reasonPhrase
             this.error = null
             this.timestamp = Date()
@@ -105,17 +118,17 @@ class JSONFormat {
 
     /**
      * for custom response (ex: report, ...)
+     * rename to responseCustom
      */
-    fun respondDynamic(data: Any?, status: HttpStatus?=HttpStatus.OK, message: String?, total: Long): ResponseDTO {
+    override fun respondDynamic(data: Any?, status: HttpStatus?, message: String?, total: Long): ResponseDTO {
 
         return ResponseDTO.apply {
             this.data = data
-            this.code = status?.value()
+            this.code = (status?.value() ?: DefaultHttpStatus.value())
             this.message = message?:status?.reasonPhrase
             this.total = total
             this.error = null
             this.timestamp = Date()
-
         }
     }
 
