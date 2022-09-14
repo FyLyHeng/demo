@@ -367,6 +367,7 @@ open class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : Defaul
         when (false){
             isAllowDelete -> {JSONFormat.respondObj(data = null, status = HttpStatus.NOT_ACCEPTABLE,"Delete Method Is Not Allow!")}
             isAllowUpdate -> {JSONFormat.respondObj(data = null, status = HttpStatus.NOT_ACCEPTABLE,"Update Method Is Not Allow!")}
+            else -> {}
         }
     }
 
