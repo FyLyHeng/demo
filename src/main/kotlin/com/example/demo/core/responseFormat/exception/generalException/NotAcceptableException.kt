@@ -1,4 +1,4 @@
-package com.example.demo.responseFormat.exception.generalException
+package com.example.demo.core.responseFormat.exception.generalException
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus

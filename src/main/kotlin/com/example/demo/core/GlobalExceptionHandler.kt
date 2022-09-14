@@ -1,17 +1,17 @@
-package com.example.demo.responseFormat.exception
+package com.example.demo.core
 
-import com.example.demo.responseFormat.exception.entityExecption.NotFoundException
-import com.example.demo.responseFormat.exception.generalException.NotAcceptableException
-import com.example.demo.responseFormat.response.ResponseDTO
+import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
+import com.example.demo.core.responseFormat.exception.generalException.NotAcceptableException
+import com.example.demo.core.responseFormat.response.ResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.http.converter.HttpMessageNotWritableException
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.util.*
+import javax.persistence.EntityNotFoundException
 
 /**
  * @exception
@@ -32,7 +33,7 @@ import java.util.*
 class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
 
     @Autowired
-    var ResponseDTO = ResponseDTO()
+    private lateinit var ResponseDTO : ResponseDTO
 
     /**
      *
@@ -147,7 +148,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
      */
     @ExceptionHandler(NotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected fun handleEntityNotFounds(ex: NotFoundException?,request: WebRequest): ResponseEntity<Any> {
+    protected fun handleEntityNotFounds(ex: NotFoundException?, request: WebRequest): ResponseEntity<Any> {
         val errors = ex?.message?:"Unexpected Error"
         val status = HttpStatus.NOT_FOUND
 
@@ -165,7 +166,42 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(NotAcceptableException::class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    protected fun handleNotAcceptable(ex: NotFoundException?,request: WebRequest): ResponseEntity<ResponseDTO> {
+    protected fun handleNotAcceptable(ex: NotAcceptableException?, request: WebRequest): ResponseEntity<ResponseDTO> {
+        val errors = ex?.message?:"Unexpected Error"
+        val status = HttpStatus.NOT_ACCEPTABLE
+
+        val body = ResponseDTO.apply {
+            this.data = null
+            this.code = status.value()
+            this.message = errors
+            this.error = status.reasonPhrase
+            this.timestamp = Date()
+        }
+        this.logger.error(ex)
+        return ResponseEntity(body, status)
+    }
+
+    @ExceptionHandler(EntityNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    protected fun handleEntityAcceptable(ex: EntityNotFoundException?, request: WebRequest): ResponseEntity<ResponseDTO> {
+        val errors = ex?.message?:"Unexpected Error"
+        val status = HttpStatus.NOT_ACCEPTABLE
+
+        val body = ResponseDTO.apply {
+            this.data = null
+            this.code = status.value()
+            this.message = errors
+            this.error = status.reasonPhrase
+            this.timestamp = Date()
+        }
+        this.logger.error(ex)
+        return ResponseEntity(body, status)
+    }
+
+
+    @ExceptionHandler(JpaObjectRetrievalFailureException::class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    protected fun handleEntityAcceptables(ex: EntityNotFoundException?, request: WebRequest): ResponseEntity<ResponseDTO> {
         val errors = ex?.message?:"Unexpected Error"
         val status = HttpStatus.NOT_ACCEPTABLE
 

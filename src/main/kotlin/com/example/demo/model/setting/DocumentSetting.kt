@@ -1,6 +1,6 @@
 package com.example.demo.model.setting
 
-import com.example.demo.base.BaseEntity
+import com.example.demo.core.BaseEntity
 import javax.persistence.*
 
 @Entity

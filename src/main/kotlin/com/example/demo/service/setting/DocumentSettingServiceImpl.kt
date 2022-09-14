@@ -3,8 +3,8 @@ package com.example.demo.service.setting
 import com.example.demo.model.setting.DocumentSetting
 import com.example.demo.repository.DocumentSettingRepository
 import com.example.demo.utilities.UtilService
-import com.example.demo.responseFormat.exception.generalException.NotAcceptableException
-import com.example.demo.responseFormat.exception.entityExecption.NotFoundException
+import com.example.demo.core.responseFormat.exception.generalException.NotAcceptableException
+import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest

@@ -1,4 +1,4 @@
-package com.example.demo.responseFormat.response
+package com.example.demo.core.responseFormat.response
 
 import com.example.demo.utilities.UtilService
 import org.springframework.beans.factory.annotation.Autowired

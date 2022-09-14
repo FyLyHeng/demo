@@ -1,4 +1,4 @@
-package com.example.demo.responseFormat.response
+package com.example.demo.core.responseFormat.response
 
 import org.springframework.stereotype.Component
 import java.util.*

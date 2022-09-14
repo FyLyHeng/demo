@@ -1,4 +1,4 @@
-package com.example.demo.responseFormat.response
+package com.example.demo.core.responseFormat.response
 
 class TreeResponse <T> (
     var data: T? = null,

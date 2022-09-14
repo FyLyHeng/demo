@@ -2,7 +2,7 @@ package com.example.demo.model.sale
 
 import com.example.demo.model.item.Item
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.example.demo.base.BaseEntity
+import com.example.demo.core.BaseEntity
 import javax.persistence.*
 
 

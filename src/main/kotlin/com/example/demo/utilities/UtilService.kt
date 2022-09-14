@@ -1,6 +1,6 @@
 package com.example.demo.utilities
 
-import com.example.demo.base.BaseEntity
+import com.example.demo.core.BaseEntity
 import org.springframework.beans.BeanUtils
 import org.springframework.stereotype.Component
 import java.lang.Double.parseDouble

@@ -1,4 +1,4 @@
-package com.example.demo.base
+package com.example.demo.core
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedBy

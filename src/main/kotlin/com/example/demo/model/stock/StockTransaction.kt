@@ -1,7 +1,7 @@
 package com.example.demo.model.stock
 
 import com.example.demo.model.item.Item
-import com.example.demo.base.BaseEntity
+import com.example.demo.core.BaseEntity
 import java.util.Date
 import javax.persistence.*
 

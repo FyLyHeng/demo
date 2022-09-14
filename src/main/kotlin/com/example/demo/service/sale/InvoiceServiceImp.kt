@@ -5,6 +5,7 @@ import com.example.demo.model.sale.dto.InvoiceDTO
 import com.example.demo.repository.sale.InvoiceDetailRepository
 import com.example.demo.repository.sale.InvoiceRepository
 import com.example.demo.utilities.UtilService
+import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service
 import javax.persistence.criteria.Predicate
 
 
+@Slf4j
 @Service
 class InvoiceServiceImp {
 
@@ -147,6 +149,10 @@ class InvoiceServiceImp {
         inv.invoiceDetail = invoice.invoiceDetail
 
         invoiceRepository.save(inv)
+    }
+
+    fun testThrow(i:Long){
+        throw Exception("test throw form service")
     }
 }
 

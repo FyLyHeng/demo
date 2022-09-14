@@ -1,13 +1,11 @@
-package com.example.demo.base
+package com.example.demo.core
 
-import com.example.demo.responseFormat.exception.entityExecption.NotFoundException
+import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
 import com.example.demo.service.setting.DocumentSettingServiceImpl
 import com.example.demo.utilities.AppConstant
 import com.example.demo.utilities.UtilService
-import com.example.demo.responseFormat.response.JSONFormat
-import com.example.demo.responseFormat.response.ResponseDTO
-import com.example.demo.responseFormat.response.ResponseFormat
-import com.example.demo.responseFormat.response.XMLFormat
+import com.example.demo.core.responseFormat.response.JSONFormat
+import com.example.demo.core.responseFormat.response.ResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page

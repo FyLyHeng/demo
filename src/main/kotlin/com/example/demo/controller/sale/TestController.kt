@@ -2,7 +2,7 @@ package com.example.demo.controller.sale
 
 import com.example.demo.model.sale.Invoice
 import com.example.demo.model.sale.dto.InvoiceDTO
-import com.example.demo.responseFormat.exception.generalException.NotAcceptableException
+import com.example.demo.core.responseFormat.exception.generalException.NotAcceptableException
 import com.example.demo.service.sale.InvoiceServiceImp
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant

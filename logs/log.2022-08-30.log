@@ -1,0 +1,219 @@
+30-08-2022 09:21:59.451 [main] [ErpPaymentGatewayApplication, ] ERRORo.s.boot.SpringApplication.reportFailure - Application run failed
+java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.joran.action.AppenderRefAction - Could not find an appender named [ROLLING]. Did you define it below instead of above in the configuration file?
+ERROR in ch.qos.logback.core.joran.action.AppenderRefAction - See http://logback.qos.ch/codes.html#appender_order for more details.
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:169)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:80)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:60)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:118)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:313)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:288)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:246)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:223)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:172)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:165)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:139)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:127)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:76)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:53)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:345)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1215)
+	at com.example.demo.DemoApplicationKt.main(DemoApplication.kt:16)
+30-08-2022 09:23:01.621 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarting - Starting DemoApplicationKt on sinet.2.129.228.136.sinet.com.kh with PID 29997 (/Users/liza/Documents/project/demo/target/classes started by liza in /Users/liza/Documents/project/demo)
+30-08-2022 09:23:01.624 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStartupProfileInfo - The following profiles are active: dev
+30-08-2022 09:23:02.602 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+30-08-2022 09:23:02.768 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Finished Spring Data repository scanning in 161ms. Found 6 JPA repository interfaces.
+30-08-2022 09:23:03.374 [main] [ErpPaymentGatewayApplication, ] INFO o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker.postProcessAfterInitialization - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+30-08-2022 09:23:03.557 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.initialize - Tomcat initialized with port(s): 8080 (http)
+30-08-2022 09:23:03.563 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8080"]
+30-08-2022 09:23:03.564 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+30-08-2022 09:23:03.564 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/9.0.30]
+30-08-2022 09:23:03.625 [main] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring embedded WebApplicationContext
+30-08-2022 09:23:03.627 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.context.ContextLoader.prepareWebApplicationContext - Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+30-08-2022 09:23:03.627 [main] [ErpPaymentGatewayApplication, ] INFO o.s.web.context.ContextLoader.prepareWebApplicationContext - Root WebApplicationContext: initialization completed in 1940 ms
+30-08-2022 09:23:03.753 [main] [ErpPaymentGatewayApplication, ] INFO o.h.jpa.internal.util.LogHelper.logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [name: default]
+30-08-2022 09:23:03.785 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.Version.logVersion - HHH000412: Hibernate Core {5.4.10.Final}
+30-08-2022 09:23:03.852 [main] [ErpPaymentGatewayApplication, ] INFO o.h.annotations.common.Version.<clinit> - HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+30-08-2022 09:23:03.920 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - maxLifetime is less than 30000ms, setting to default 1800000ms.
+30-08-2022 09:23:03.921 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - idleTimeout is less than 10000ms, setting to default 600000ms.
+30-08-2022 09:23:03.921 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+30-08-2022 09:23:03.971 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+30-08-2022 09:23:03.978 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.dialect.Dialect.<init> - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+30-08-2022 09:23:04.586 [main] [ErpPaymentGatewayApplication, ] INFO o.h.e.t.j.p.i.JtaPlatformInitiator.initiateService - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+30-08-2022 09:23:04.591 [main] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 09:23:05.906 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.handlerMethodsInitialized - 48 mappings in 'requestMappingHandlerMapping'
+30-08-2022 09:23:06.050 [main] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.initialize - Initializing ExecutorService 'applicationTaskExecutor'
+30-08-2022 09:23:06.063 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerAdapter.initControllerAdviceCache - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+30-08-2022 09:23:06.083 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/swagger-ui/] in 'viewControllerHandlerMapping'
+30-08-2022 09:23:06.095 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/webjars/**, /**, /swagger-ui/**] in 'resourceHandlerMapping'
+30-08-2022 09:23:06.102 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.initExceptionHandlerAdviceCache - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+30-08-2022 09:23:06.728 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 09:23:06.730 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 09:23:06.885 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8080"]
+30-08-2022 09:23:06.908 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.start - Tomcat started on port(s): 8080 (http) with context path ''
+30-08-2022 09:23:06.913 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarted - Started DemoApplicationKt in 5.947 seconds (JVM running for 6.822)
+30-08-2022 09:32:36.105 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.shutdown - Shutting down ExecutorService 'applicationTaskExecutor'
+30-08-2022 09:32:36.116 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.destroy - Closing JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 09:32:36.145 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown initiated...
+30-08-2022 09:32:36.156 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown completed.
+30-08-2022 09:32:40.831 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarting - Starting DemoApplicationKt on sinet.2.129.228.136.sinet.com.kh with PID 30173 (/Users/liza/Documents/project/demo/target/classes started by liza in /Users/liza/Documents/project/demo)
+30-08-2022 09:32:40.835 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStartupProfileInfo - The following profiles are active: dev
+30-08-2022 09:32:41.868 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+30-08-2022 09:32:41.981 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Finished Spring Data repository scanning in 106ms. Found 6 JPA repository interfaces.
+30-08-2022 09:32:42.590 [main] [ErpPaymentGatewayApplication, ] INFO o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker.postProcessAfterInitialization - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+30-08-2022 09:32:42.770 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.initialize - Tomcat initialized with port(s): 8080 (http)
+30-08-2022 09:32:42.778 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8080"]
+30-08-2022 09:32:42.778 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+30-08-2022 09:32:42.779 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/9.0.30]
+30-08-2022 09:32:42.836 [main] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring embedded WebApplicationContext
+30-08-2022 09:32:42.839 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.context.ContextLoader.prepareWebApplicationContext - Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+30-08-2022 09:32:42.839 [main] [ErpPaymentGatewayApplication, ] INFO o.s.web.context.ContextLoader.prepareWebApplicationContext - Root WebApplicationContext: initialization completed in 1945 ms
+30-08-2022 09:32:42.961 [main] [ErpPaymentGatewayApplication, ] INFO o.h.jpa.internal.util.LogHelper.logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [name: default]
+30-08-2022 09:32:42.990 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.Version.logVersion - HHH000412: Hibernate Core {5.4.10.Final}
+30-08-2022 09:32:43.049 [main] [ErpPaymentGatewayApplication, ] INFO o.h.annotations.common.Version.<clinit> - HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+30-08-2022 09:32:43.092 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - maxLifetime is less than 30000ms, setting to default 1800000ms.
+30-08-2022 09:32:43.093 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - idleTimeout is less than 10000ms, setting to default 600000ms.
+30-08-2022 09:32:43.093 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+30-08-2022 09:32:43.134 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+30-08-2022 09:32:43.142 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.dialect.Dialect.<init> - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+30-08-2022 09:32:43.706 [main] [ErpPaymentGatewayApplication, ] INFO o.h.e.t.j.p.i.JtaPlatformInitiator.initiateService - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+30-08-2022 09:32:43.711 [main] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 09:32:45.085 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.handlerMethodsInitialized - 48 mappings in 'requestMappingHandlerMapping'
+30-08-2022 09:32:45.223 [main] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.initialize - Initializing ExecutorService 'applicationTaskExecutor'
+30-08-2022 09:32:45.237 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerAdapter.initControllerAdviceCache - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+30-08-2022 09:32:45.256 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/swagger-ui/] in 'viewControllerHandlerMapping'
+30-08-2022 09:32:45.269 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/webjars/**, /**, /swagger-ui/**] in 'resourceHandlerMapping'
+30-08-2022 09:32:45.279 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.initExceptionHandlerAdviceCache - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+30-08-2022 09:32:45.964 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 09:32:45.967 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 09:32:46.137 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8080"]
+30-08-2022 09:32:46.158 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.start - Tomcat started on port(s): 8080 (http) with context path ''
+30-08-2022 09:32:46.161 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarted - Started DemoApplicationKt in 6.012 seconds (JVM running for 6.806)
+30-08-2022 09:32:52.807 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring DispatcherServlet 'dispatcherServlet'
+30-08-2022 09:32:52.809 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] INFO o.s.web.servlet.DispatcherServlet.initServletBean - Initializing Servlet 'dispatcherServlet'
+30-08-2022 09:32:52.810 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.initMultipartResolver - Detected StandardServletMultipartResolver
+30-08-2022 09:32:52.829 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.initServletBean - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+30-08-2022 09:32:52.830 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] INFO o.s.web.servlet.DispatcherServlet.initServletBean - Completed initialization in 20 ms
+30-08-2022 09:32:52.835 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.traceDebug - GET "/v1/api/invoice/throw?i=11", parameters={masked}
+30-08-2022 09:32:52.841 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.getHandler - Mapped to com.example.demo.controller.sale.InvoiceController#testThrow(long)
+30-08-2022 09:32:52.878 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException - Using @ExceptionHandler com.example.demo.responseFormat.exception.GlobalExceptionHandler#handleAllExceptions(Exception, WebRequest)
+30-08-2022 09:32:52.879 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] ERRORc.e.d.r.e.GlobalExceptionHandler.handleAllExceptions - test throw form service
+30-08-2022 09:32:52.962 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.HttpEntityMethodProcessor.writeWithMessageConverters - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+30-08-2022 09:32:52.963 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.HttpEntityMethodProcessor.traceDebug - Writing [com.example.demo.responseFormat.response.ResponseDTO@7a2ffb0b]
+30-08-2022 09:32:52.979 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.resolveException - Resolved [java.lang.Exception: test throw form service]
+30-08-2022 09:32:52.980 [http-nio-8080-exec-1] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.logResult - Completed 500 INTERNAL_SERVER_ERROR
+30-08-2022 09:35:25.031 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.shutdown - Shutting down ExecutorService 'applicationTaskExecutor'
+30-08-2022 09:35:25.040 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.destroy - Closing JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 09:35:25.063 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown initiated...
+30-08-2022 09:35:25.071 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown completed.
+30-08-2022 09:35:29.588 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarting - Starting DemoApplicationKt on sinet.2.129.228.136.sinet.com.kh with PID 30217 (/Users/liza/Documents/project/demo/target/classes started by liza in /Users/liza/Documents/project/demo)
+30-08-2022 09:35:29.590 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStartupProfileInfo - The following profiles are active: dev
+30-08-2022 09:35:30.577 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+30-08-2022 09:35:30.690 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Finished Spring Data repository scanning in 106ms. Found 6 JPA repository interfaces.
+30-08-2022 09:35:31.310 [main] [ErpPaymentGatewayApplication, ] INFO o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker.postProcessAfterInitialization - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+30-08-2022 09:35:31.479 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.initialize - Tomcat initialized with port(s): 8080 (http)
+30-08-2022 09:35:31.488 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8080"]
+30-08-2022 09:35:31.488 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+30-08-2022 09:35:31.488 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/9.0.30]
+30-08-2022 09:35:31.574 [main] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring embedded WebApplicationContext
+30-08-2022 09:35:31.576 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.context.ContextLoader.prepareWebApplicationContext - Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+30-08-2022 09:35:31.577 [main] [ErpPaymentGatewayApplication, ] INFO o.s.web.context.ContextLoader.prepareWebApplicationContext - Root WebApplicationContext: initialization completed in 1927 ms
+30-08-2022 09:35:31.726 [main] [ErpPaymentGatewayApplication, ] INFO o.h.jpa.internal.util.LogHelper.logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [name: default]
+30-08-2022 09:35:31.756 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.Version.logVersion - HHH000412: Hibernate Core {5.4.10.Final}
+30-08-2022 09:35:31.815 [main] [ErpPaymentGatewayApplication, ] INFO o.h.annotations.common.Version.<clinit> - HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+30-08-2022 09:35:31.856 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - maxLifetime is less than 30000ms, setting to default 1800000ms.
+30-08-2022 09:35:31.856 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - idleTimeout is less than 10000ms, setting to default 600000ms.
+30-08-2022 09:35:31.857 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+30-08-2022 09:35:31.912 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+30-08-2022 09:35:31.921 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.dialect.Dialect.<init> - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+30-08-2022 09:35:32.472 [main] [ErpPaymentGatewayApplication, ] INFO o.h.e.t.j.p.i.JtaPlatformInitiator.initiateService - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+30-08-2022 09:35:32.477 [main] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 09:35:33.874 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.handlerMethodsInitialized - 48 mappings in 'requestMappingHandlerMapping'
+30-08-2022 09:35:34.018 [main] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.initialize - Initializing ExecutorService 'applicationTaskExecutor'
+30-08-2022 09:35:34.032 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerAdapter.initControllerAdviceCache - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+30-08-2022 09:35:34.052 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/swagger-ui/] in 'viewControllerHandlerMapping'
+30-08-2022 09:35:34.064 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/webjars/**, /**, /swagger-ui/**] in 'resourceHandlerMapping'
+30-08-2022 09:35:34.071 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.initExceptionHandlerAdviceCache - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+30-08-2022 09:35:34.557 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 09:35:34.559 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 09:35:34.795 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8080"]
+30-08-2022 09:35:34.819 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.start - Tomcat started on port(s): 8080 (http) with context path ''
+30-08-2022 09:35:34.822 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarted - Started DemoApplicationKt in 5.905 seconds (JVM running for 6.6)
+30-08-2022 09:35:44.943 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring DispatcherServlet 'dispatcherServlet'
+30-08-2022 09:35:44.946 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] INFO o.s.web.servlet.DispatcherServlet.initServletBean - Initializing Servlet 'dispatcherServlet'
+30-08-2022 09:35:44.947 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.initMultipartResolver - Detected StandardServletMultipartResolver
+30-08-2022 09:35:44.966 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.initServletBean - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+30-08-2022 09:35:44.966 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] INFO o.s.web.servlet.DispatcherServlet.initServletBean - Completed initialization in 19 ms
+30-08-2022 09:35:44.972 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.traceDebug - GET "/v1/api/invoice/throw?i=11", parameters={masked}
+30-08-2022 09:35:44.977 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.getHandler - Mapped to com.example.demo.controller.sale.InvoiceController#testThrow(long)
+30-08-2022 09:35:45.016 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException - Using @ExceptionHandler com.example.demo.responseFormat.exception.GlobalExceptionHandler#handleAllExceptions(Exception, WebRequest)
+30-08-2022 09:35:45.017 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] ERRORc.e.d.r.e.GlobalExceptionHandler.handleAllExceptions - test throw form service
+30-08-2022 09:35:45.120 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.HttpEntityMethodProcessor.writeWithMessageConverters - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+30-08-2022 09:35:45.121 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.HttpEntityMethodProcessor.traceDebug - Writing [com.example.demo.responseFormat.response.ResponseDTO@43b74979]
+30-08-2022 09:35:45.140 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.resolveException - Resolved [java.lang.Exception: test throw form service]
+30-08-2022 09:35:45.140 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.logResult - Completed 500 INTERNAL_SERVER_ERROR
+30-08-2022 10:28:25.767 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.shutdown - Shutting down ExecutorService 'applicationTaskExecutor'
+30-08-2022 10:28:25.782 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.destroy - Closing JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 10:28:25.814 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown initiated...
+30-08-2022 10:28:25.821 [SpringContextShutdownHook] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.close - HikariPool-1 - Shutdown completed.
+30-08-2022 10:51:02.574 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarting - Starting DemoApplicationKt on sinet.2.129.228.136.sinet.com.kh with PID 31509 (/Users/liza/Documents/project/demo/target/classes started by liza in /Users/liza/Documents/project/demo)
+30-08-2022 10:51:02.579 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStartupProfileInfo - The following profiles are active: dev
+30-08-2022 10:52:15.292 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarting - Starting DemoApplicationKt on sinet.2.129.228.136.sinet.com.kh with PID 31549 (/Users/liza/Documents/project/demo/target/classes started by liza in /Users/liza/Documents/project/demo)
+30-08-2022 10:52:15.295 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStartupProfileInfo - The following profiles are active: dev
+30-08-2022 10:52:16.327 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+30-08-2022 10:52:16.456 [main] [ErpPaymentGatewayApplication, ] INFO o.s.d.r.c.RepositoryConfigurationDelegate.registerRepositoriesIn - Finished Spring Data repository scanning in 121ms. Found 6 JPA repository interfaces.
+30-08-2022 10:52:17.097 [main] [ErpPaymentGatewayApplication, ] INFO o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker.postProcessAfterInitialization - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+30-08-2022 10:52:17.269 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.initialize - Tomcat initialized with port(s): 8080 (http)
+30-08-2022 10:52:17.278 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Initializing ProtocolHandler ["http-nio-8080"]
+30-08-2022 10:52:17.279 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardService.log - Starting service [Tomcat]
+30-08-2022 10:52:17.279 [main] [ErpPaymentGatewayApplication, ] INFO o.a.catalina.core.StandardEngine.log - Starting Servlet engine: [Apache Tomcat/9.0.30]
+30-08-2022 10:52:17.340 [main] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring embedded WebApplicationContext
+30-08-2022 10:52:17.340 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.context.ContextLoader.prepareWebApplicationContext - Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+30-08-2022 10:52:17.340 [main] [ErpPaymentGatewayApplication, ] INFO o.s.web.context.ContextLoader.prepareWebApplicationContext - Root WebApplicationContext: initialization completed in 1984 ms
+30-08-2022 10:52:17.468 [main] [ErpPaymentGatewayApplication, ] INFO o.h.jpa.internal.util.LogHelper.logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [name: default]
+30-08-2022 10:52:17.498 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.Version.logVersion - HHH000412: Hibernate Core {5.4.10.Final}
+30-08-2022 10:52:17.557 [main] [ErpPaymentGatewayApplication, ] INFO o.h.annotations.common.Version.<clinit> - HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+30-08-2022 10:52:17.602 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - maxLifetime is less than 30000ms, setting to default 1800000ms.
+30-08-2022 10:52:17.602 [main] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.HikariConfig.validateNumerics - HikariPool-1 - idleTimeout is less than 10000ms, setting to default 600000ms.
+30-08-2022 10:52:17.602 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Starting...
+30-08-2022 10:52:17.666 [main] [ErpPaymentGatewayApplication, ] INFO com.zaxxer.hikari.HikariDataSource.getConnection - HikariPool-1 - Start completed.
+30-08-2022 10:52:17.675 [main] [ErpPaymentGatewayApplication, ] INFO org.hibernate.dialect.Dialect.<init> - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+30-08-2022 10:52:18.225 [main] [ErpPaymentGatewayApplication, ] INFO o.h.e.t.j.p.i.JtaPlatformInitiator.initiateService - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+30-08-2022 10:52:18.229 [main] [ErpPaymentGatewayApplication, ] INFO o.s.o.j.LocalContainerEntityManagerFactoryBean.buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'default'
+30-08-2022 10:52:19.600 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.handlerMethodsInitialized - 48 mappings in 'requestMappingHandlerMapping'
+30-08-2022 10:52:19.743 [main] [ErpPaymentGatewayApplication, ] INFO o.s.s.c.ThreadPoolTaskExecutor.initialize - Initializing ExecutorService 'applicationTaskExecutor'
+30-08-2022 10:52:19.757 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerAdapter.initControllerAdviceCache - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+30-08-2022 10:52:19.776 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/swagger-ui/] in 'viewControllerHandlerMapping'
+30-08-2022 10:52:19.788 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.h.SimpleUrlHandlerMapping.registerHandlers - Patterns [/webjars/**, /**, /swagger-ui/**] in 'resourceHandlerMapping'
+30-08-2022 10:52:19.796 [main] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.ExceptionHandlerExceptionResolver.initExceptionHandlerAdviceCache - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+30-08-2022 10:52:20.444 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 10:52:20.446 [main] [ErpPaymentGatewayApplication, ] WARN s.d.s.r.o.OperationImplicitParameterReader.modelSpecification - Unable to interpret the implicit parameter configuration with dataType: , dataTypeClass: class java.lang.Void
+30-08-2022 10:52:20.604 [main] [ErpPaymentGatewayApplication, ] INFO o.a.coyote.http11.Http11NioProtocol.log - Starting ProtocolHandler ["http-nio-8080"]
+30-08-2022 10:52:20.623 [main] [ErpPaymentGatewayApplication, ] INFO o.s.b.w.e.tomcat.TomcatWebServer.start - Tomcat started on port(s): 8080 (http) with context path ''
+30-08-2022 10:52:20.626 [main] [ErpPaymentGatewayApplication, ] INFO com.example.demo.DemoApplicationKt.logStarted - Started DemoApplicationKt in 5.988 seconds (JVM running for 6.733)
+30-08-2022 10:52:32.498 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] INFO o.a.c.c.C.[Tomcat].[localhost].[/].log - Initializing Spring DispatcherServlet 'dispatcherServlet'
+30-08-2022 10:52:32.501 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] INFO o.s.web.servlet.DispatcherServlet.initServletBean - Initializing Servlet 'dispatcherServlet'
+30-08-2022 10:52:32.502 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.initMultipartResolver - Detected StandardServletMultipartResolver
+30-08-2022 10:52:32.524 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.initServletBean - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+30-08-2022 10:52:32.524 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] INFO o.s.web.servlet.DispatcherServlet.initServletBean - Completed initialization in 22 ms
+30-08-2022 10:52:32.533 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.traceDebug - GET "/v1/api/category/list?page=0&size=10&orderBy=version&sort=desc", parameters={masked}
+30-08-2022 10:52:32.540 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestMappingHandlerMapping.getHandler - Mapped to com.example.demo.controller.item.CategoryController#baseListCriteria(Map)
+30-08-2022 10:52:32.667 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestResponseBodyMethodProcessor.writeWithMessageConverters - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+30-08-2022 10:52:32.668 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.w.s.m.m.a.RequestResponseBodyMethodProcessor.traceDebug - Writing [com.example.demo.core.responseFormat.response.ResponseDTO@2569afda]
+30-08-2022 10:52:32.700 [http-nio-8080-exec-2] [ErpPaymentGatewayApplication, ] DEBUGo.s.web.servlet.DispatcherServlet.logResult - Completed 200 OK
+30-08-2022 13:07:52.757 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m129ms).
+30-08-2022 14:02:56.609 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=54m33s803ms).
+30-08-2022 15:14:41.954 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m14s584ms).
+30-08-2022 16:37:17.770 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17m5s243ms).
+30-08-2022 16:55:28.783 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=18m11s18ms).
+30-08-2022 17:12:41.085 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m42s290ms).
+30-08-2022 17:46:40.602 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m29s221ms).
+30-08-2022 18:36:11.373 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=49m767ms).
+30-08-2022 19:40:54.478 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h4m43s105ms).
+30-08-2022 21:02:01.066 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h21m6s587ms).
+30-08-2022 22:00:25.365 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=58m24s300ms).
+30-08-2022 22:52:56.958 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=52m1s580ms).
+30-08-2022 22:54:52.906 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m55s948ms).
+30-08-2022 23:26:38.558 [HikariPool-1 housekeeper] [ErpPaymentGatewayApplication, ] WARN com.zaxxer.hikari.pool.HikariPool.run - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=31m45s652ms).
