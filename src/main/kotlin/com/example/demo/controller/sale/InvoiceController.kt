@@ -52,19 +52,26 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
     }
 
 
+    override fun update(id: Long, entity: Invoice?): ResponseDTO {
 
-    override fun update(id: Long, entity: Invoice): Invoice? {
-        return update(id, entity, exclude = listOf("invoiceDetail", "invoiceNo")){
+        val data = update(id, entity!!, exclude = listOf("invoiceDetail", "invoiceNo")){
             it.invoiceDetail?.clear()
             it.invoiceDetail?.addAll(entity.invoiceDetail!!)
         }
+
+        return JSONFormat.respondID(data)
     }
 
-    override fun create(entity: Invoice): Invoice? {
-        return create(entity){
+
+
+    override fun create(entity: Invoice): ResponseDTO {
+        val data = create(entity){
             it.invoiceNo = documentSettingService.getNextSeries("invoice")
         }
+
+        return JSONFormat.respondID(data)
     }
+
 
     override fun beforeSave(entity: Invoice) {
         try {
@@ -93,12 +100,9 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
     }
 
 
-    override fun baseListCriteria(allParams: Map<String, String>): ResponseDTO {
+    override fun list(allParams: Map<String, String>): ResponseDTO {
         println("me dirce override form base controller")
-        return super.baseListCriteria(allParams)
+        return super.list(allParams)
     }
-
-
-
 
 }

@@ -51,77 +51,122 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
      */
 
     @PostMapping
-    private fun baseCreate(@RequestBody entity: T): ResponseDTO {
+    open fun create(@RequestBody entity: T): ResponseDTO {
 
         this.beforeSave(entity)
-        val obj = repo?.save(create(entity)!!)!!
+
+        val obj = repo?.save(create(entity) {})!!
+
         this.afterSaved(obj)
         return JSONFormat.respondID(obj)
     }
 
     @PostMapping("/multi")
-    private fun baseCreateMulti(@RequestBody entities: MutableList<T>): ResponseDTO {
-        return JSONFormat.respondID(repo?.saveAll(createMulti(entities)))
+    open fun createMulti(@RequestBody entities: MutableList<T>): ResponseDTO {
+
+        entities.forEach {
+            validateFields(it)
+            utilService.setValueToField(it, FIELD_CUSTOM_STATUS,DEFAULT_CUSTOMSTATUS)
+        }
+
+
+        return JSONFormat.respondID(repo?.saveAll(entities))
     }
 
 
     @PutMapping("{id}")
-    private fun baseUpdate(@PathVariable(value = "id") id: Long, @RequestBody entity: T?): ResponseDTO {
+    open fun update(@PathVariable(value = "id") id: Long, @RequestBody entity: T?): ResponseDTO {
 
         this.beforeUpdate(entity!!)
-        val obj = repo?.save(update(id, entity)!!)!!
-        this.afterUpdated(obj)
-        return JSONFormat.respondID(obj)
+
+        val data = repo?.save(
+            update(id, entity)
+        )!!
+
+        this.afterUpdated(data)
+
+        return JSONFormat.respondID(data)
     }
 
     @PutMapping("/multi")
-    private fun baseUpdateMulti( @RequestBody entities: MutableList<T>): ResponseDTO {
+    open fun updateMulti( @RequestBody entities: MutableList<T>): ResponseDTO {
 
-        val obj = repo?.saveAll(updateMulti(entities))
+        val listOfObj = updateMulti(entities, null, null)
+
+        val obj = repo?.saveAll(listOfObj)
         return JSONFormat.respondID(obj)
     }
 
 
     @DeleteMapping("{id}")
-    private fun baseDelete(@PathVariable(value = "id") id: Long): ResponseDTO {
-        delete(id)
+    open fun delete(@PathVariable(value = "id") id: Long): ResponseDTO {
+
+        this.checkAllowModify()
+        try {
+            repo?.deleteById(id)
+        } catch (ex: EmptyResultDataAccessException){
+            notFound(id)
+        }
+
         return JSONFormat.respondObj(null, status = HttpStatus.OK)
     }
 
     @PutMapping("/delete")
-    private fun baseDelete(@RequestBody listEntity: MutableList<T>) : ResponseDTO {
-        return JSONFormat.respondObj(null)
+    open fun softDelete(@RequestBody listEntity: MutableList<T>) : ResponseDTO {
+
+        val listEntityID = listEntity.map { utilService.getValueFromField(it,"id")?.toLong()!! }
+
+        val result = listByIds(listEntityID, true)
+
+        result?.getOrElse(0){ throw NotFoundException( "ids doesn't exists") }
+
+        result?.forEach { it.status = false }
+        val data = repo!!.saveAll(result!!)
+
+        return JSONFormat.respondObj(data)
     }
 
 
     @GetMapping("{id}")
-    private fun baseGet(@PathVariable(value = "id") id: Long): ResponseDTO {
-        return JSONFormat.respondObj(get(id))
+    open fun get(@PathVariable(value = "id") id: Long): ResponseDTO {
+        return JSONFormat.respondObj(getById(id))
     }
 
 
     @GetMapping(AppConstant.ALL_PATH)
-    private fun baseAll(@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
-        return JSONFormat.respondList(all(allParams))
+    open fun all(@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
+
+        val params = DefaultFilter(allParams.toMutableMap())
+
+        val data = repo?.findAll ({ root, _, cb ->
+            val predicates = ArrayList<Predicate>()
+
+            this.defaultFilterFields(predicates,cb,root, allParams)
+            cb.and(*predicates.toTypedArray())
+
+        }, Sort.by(params.sortDirection,params.orderBy))
+
+        return JSONFormat.respondList(data)
+
     }
 
 
     @GetMapping(AppConstant.LIST_PATH)
-    open fun baseListCriteria(@RequestParam allParams: Map<String, String>): ResponseDTO {
+    open fun list(@RequestParam allParams: Map<String, String>): ResponseDTO {
         return JSONFormat.respondPage(listCriteria(allParams))
     }
 
 
     @PutMapping(AppConstant.UPDATE_SUBMIT_PATH +"/{id}")
-    private fun baseUpdateToSubmit(@PathVariable id: Long): ResponseDTO {
-        val obj = updateToSubmit(id)
+    open fun updateToSubmit(@PathVariable id: Long): ResponseDTO {
+        val obj = this.updateStatusToSubmit(id)
         return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
 
     @PutMapping(AppConstant.UPDATE_CANCEL_PATH +"/{id}")
-    private fun baseUpdateToCancel(@PathVariable id: Long): ResponseDTO {
-        val obj = updateToCancel(id)
+    open fun updateToCancel(@PathVariable id: Long): ResponseDTO {
+        val obj = updateStatusToCancel(id)
         return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
@@ -140,11 +185,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
      *
      */
 
-    open fun create(entity: T): T? {
-        utilService.setValueToField(entity,FIELD_CUSTOM_STATUS,DEFAULT_CUSTOMSTATUS)
-        return entity
-    }
-    fun create(entity: T, customFields: (targetOBJ:T)-> Unit = {}):T{
+    open fun create(entity: T, customFields: (targetOBJ:T)-> Unit = {}):T{
         customFields(entity)
         return entity
     }
@@ -162,13 +203,14 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     }
 
 
-    open fun createMulti (entities : List<T>) : List<T> {
+    fun createMulti (entities : List<T>) : List<T> {
         entities.forEach {
             validateFields(it)
             utilService.setValueToField(it, FIELD_CUSTOM_STATUS,DEFAULT_CUSTOMSTATUS)
         }
         return entities
     }
+
     fun createMulti (entities : List<T>, customFields: (targetObj: T) -> Unit = {}) : List<T> {
         entities.forEach {
             validateFields(it)
@@ -179,43 +221,43 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     }
 
 
-    open fun update(id: Long, entity: T): T? {
+    fun update(id: Long, entity: T): T {
 
-        utilService.readInstanceProperty<T>(entity,"")
-        val obj= this.get(id)!!
+        val obj= this.getById(id)!!
         utilService.bindProperties(entity, obj)
         return obj
     }
 
     fun update(id: Long, entity: T, include: List<String>? = null, exclude: List<String>? = null): T {
-        val obj= this.get(id)!!
+        val obj= this.getById(id)!!
         utilService.bindProperties(entity, obj, include = include, exclude = exclude)
 
         return obj
     }
     fun update(id: Long, entity: T, include: List<String>? = null, exclude: List<String>? = null, customChild: (targetObj: T) -> Unit = {}): T {
-        val obj = this.get(id)!!
+        val obj = this.getById(id)!!
         utilService.bindProperties(entity, obj, include = include, exclude = exclude)
         customChild(obj)
         return obj
     }
 
 
-    open fun updateMulti(entities: MutableList<T>, include: List<String>? = null, exclude: List<String>? = null): List<T>{
+    fun updateMulti(entities: MutableList<T>, include: List<String>? = null, exclude: List<String>? = null): List<T>{
         val listOfObj = mutableListOf<T>()
         entities.forEach {
             val id = utilService.getValueFromField(it, "id")?.toLong()!!
-            val obj = this.get(id)!!
+            val obj = this.getById(id)!!
             utilService.bindProperties(it, obj, include, exclude)
             listOfObj.add(obj)
         }
         return listOfObj
     }
+
     fun updateMulti(entities: MutableList<T>, include: List<String>? = null, exclude: List<String>? = null, customChild: (targetObj: T) -> Unit = {}): List<T>{
         val listOfObj = mutableListOf<T>()
         entities.forEach {
             val id = utilService.getValueFromField(it, "id")?.toLong()!!
-            val obj = this.get(id)!!
+            val obj = this.getById(id)!!
             utilService.bindProperties(it, obj, include, exclude)
 
             customChild(obj)
@@ -225,76 +267,47 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     }
 
 
-    open fun updateToSubmit(id: Long): T {
-        val obj = get(id)!!
+    fun updateStatusToSubmit(id: Long): T {
+        val obj = getById(id)!!
         utilService.setValueToField(obj,FIELD_CUSTOM_STATUS,AppConstant.SUBMIT)
         return obj
     }
-    fun updateToSubmit(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, postGL: (targetObj: T) -> Unit = {}): T {
-        val obj = get(id)!!
+    fun updateStatusToSubmit(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, postGL: (targetObj: T) -> Unit = {}): T {
+        val obj = getById(id)!!
         utilService.setValueToField(obj,fieldName,AppConstant.SUBMIT)
         postGL(obj)
         return obj
     }
 
 
-    open fun updateToCancel(id: Long): T {
-        val obj = get(id)!!
+    fun updateStatusToCancel(id: Long): T {
+        val obj = getById(id)!!
         utilService.setValueToField(obj,FIELD_CUSTOM_STATUS,AppConstant.CANCEL)
         return obj
     }
-    fun updateToCancel(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, postGL: (targetObj: T) -> Unit = {}): T {
-        val obj = get(id)!!
+    fun updateStatusToCancel(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, postGL: (targetObj: T) -> Unit = {}): T {
+        val obj = getById(id)!!
         utilService.setValueToField(obj,fieldName,AppConstant.CANCEL)
         postGL(obj)
         return obj
     }
 
-    open fun updateStatus(id: Long, customStatus: String): T {
-        val obj = get(id)!!
+    fun updateStatus(id: Long, customStatus: String): T {
+        val obj = getById(id)!!
         utilService.setValueToField(obj,FIELD_CUSTOM_STATUS,customStatus)
         return obj
     }
 
 
-    //TODO the obj pass from front-end have issues
-    open fun softDelete(listEntity: MutableList<T>) : MutableList<T>{
 
-        val listEntityID = listEntity.map { utilService.getValueFromField(it,"id")?.toLong()!! }
-
-        val result = repo?.findAllByIdInAndStatus(listEntityID,true)
-
-        result?.getOrElse(0){ throw NotFoundException( "ids doesn't exists") }
-
-        result?.forEach { it.status = false }
-        return repo!!.saveAll(result!!)
-    }
-
-    open fun delete(id:Long){
-        this.checkAllowModify()
-        try {
-            repo?.deleteById(id)
-        } catch (ex: EmptyResultDataAccessException){
-            notFound(id)
-        }
-    }
-
-    open fun get(id: Long): T? {
+    fun getById(id: Long): T? {
         return repo?.findById(id)?.orElseThrow { notFound(id) }
     }
 
-
-    open fun all(allParams: MutableMap<String, String>): MutableList<T>? {
-        val params = DefaultFilter(allParams.toMutableMap())
-
-        return repo?.findAll ({ root, _, cb ->
-            val predicates = ArrayList<Predicate>()
-
-            this.defaultFilterFields(predicates,cb,root, allParams)
-            cb.and(*predicates.toTypedArray())
-
-        }, Sort.by(params.sortDirection,params.orderBy))
+    fun listByIds(listEntityID : List<Long>, status:Boolean): MutableList<T>? {
+        return repo?.findAllByIdInAndStatus(listEntityID,status)
     }
+
     fun allDynamicFilter(allParams: MutableMap<String, String>,addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit): MutableList<T>? {
         val params = DefaultFilter(allParams.toMutableMap())
 
@@ -309,7 +322,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     }
 
 
-    open fun listCriteria(allParams: Map<String, String>): Page<T>? {
+    fun listCriteria(allParams: Map<String, String>): Page<T>? {
         val params = DefaultFilter(allParams.toMutableMap())
 
 
@@ -339,6 +352,8 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
 
 //================================================================================================
+
+
 
     protected fun notFound (id: Long) : NotFoundException {
         //TODO retrive id without passing vai fun parameter.

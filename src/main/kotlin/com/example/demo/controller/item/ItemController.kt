@@ -4,6 +4,7 @@ import com.example.demo.core.GenericRestfulController
 import com.example.demo.model.item.Item
 import com.example.demo.repository.item.CategoryRepository
 import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
+import com.example.demo.core.responseFormat.response.ResponseDTO
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +28,7 @@ class ItemController(
 
 
 
-    override fun create(entity: Item): Item? {
+    override fun create(entity: Item): ResponseDTO {
         entity.name = "liza"
         return super.create(entity)
     }

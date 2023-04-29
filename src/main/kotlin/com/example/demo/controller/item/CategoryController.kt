@@ -1,6 +1,7 @@
 package com.example.demo.controller.item
 
 import com.example.demo.core.GenericRestfulController
+import com.example.demo.core.responseFormat.response.ResponseDTO
 import com.example.demo.model.item.Category
 import com.example.demo.utilities.AppConstant
 import lombok.extern.slf4j.Slf4j
@@ -24,15 +25,16 @@ class CategoryController : GenericRestfulController<Category>(resource = Categor
 
 
     // should change allParams (map) to specific model.
-    override fun listCriteria(allParams: Map<String, String>): Page<Category>? {
-
+    override fun list(allParams: Map<String, String>): ResponseDTO {
         val name = allParams["name"]
         val age = allParams["age"]
 
-        return listCriteria(allParams){ predicates, cb, root ->
+        val data = listCriteria(allParams){ predicates, cb, root ->
 
             name?.let { predicates.add(cb.equal(root.get<String>("name"), it)) }
             age?.let { predicates.add(cb.equal(root.get<Long>("age"), it.toLong())) }
         }
+
+        return JSONFormat.respondPage(data)
     }
 }
