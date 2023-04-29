@@ -1,4 +1,4 @@
-package com.ig.erp.base
+package com.example.demo.core
 
 import org.springframework.data.domain.Page
 

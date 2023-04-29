@@ -16,12 +16,4 @@ class ResponseDTO(
 
     constructor() : this(data=null, code=null, message= null, timestamp=null)
 
-    init {
-        println("init ${this.toString()}")
-    }
-
-    fun finalize (){
-        println("destroy ${this.toString()}")
-    }
-
 }

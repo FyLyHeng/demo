@@ -102,7 +102,6 @@ class JSONFormat : ResponseFormat {
      */
 
     override fun <T: Any> respondPage(data: Page<T>?, status: HttpStatus?, message: String?): ResponseDTO {
-        println("Form JSON")
 
         return ResponseDTO.apply {
             this.data = data?.content
