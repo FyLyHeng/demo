@@ -18,7 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
 
-open class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : DefaultFilter() {
+abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : DefaultFilter() {
 
     @Autowired
     lateinit var JSONFormat : JSONFormat
@@ -107,7 +107,7 @@ open class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : Defaul
 
 
     @GetMapping(AppConstant.LIST_PATH)
-    private fun baseListCriteria(@RequestParam allParams: Map<String, String>): ResponseDTO {
+    open fun baseListCriteria(@RequestParam allParams: Map<String, String>): ResponseDTO {
         return JSONFormat.respondPage(listCriteria(allParams))
     }
 

@@ -17,8 +17,8 @@ import javax.persistence.criteria.Predicate
 
 @Slf4j
 @Service
-@Qualifier("invV1")
-class InvoiceServiceImp : InvoiceService {
+@Qualifier("invV2")
+class InvoiceServiceImpV2 : InvoiceService {
 
     @Autowired
     lateinit var invoiceRepository: InvoiceRepository

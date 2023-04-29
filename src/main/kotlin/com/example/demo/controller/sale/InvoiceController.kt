@@ -5,6 +5,7 @@ import com.example.demo.core.responseFormat.exception.entityExecption.BadRequest
 import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
 import com.example.demo.model.sale.Invoice
 import com.example.demo.core.responseFormat.response.ResponseDTO
+import com.example.demo.service.sale.InvoiceService
 import com.example.demo.service.sale.InvoiceServiceImp
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiParam
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,8 +27,31 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
 
     @Autowired
     lateinit var stockTransactionService: StockTransactionServiceImp
+
     @Autowired
-    lateinit var invoiceService: InvoiceServiceImp
+    @Qualifier("invV2")
+    lateinit var invoiceService: InvoiceService
+
+
+
+    @GetMapping("/throw")
+    fun testThrow(@RequestParam i : Long): ResponseDTO {
+
+        if (i == 10L) {
+            invoiceService.testThrow(10)
+        }
+        else if (i == 20L){
+            throw RuntimeException("I can't not be negative")
+        }
+
+        else if (i == 30L){
+            throw NotFoundException("custom not found exp")
+        }
+
+        return JSONFormat.respondDynamic("OK",  HttpStatus.OK, HttpStatus.OK.reasonPhrase , 0 )
+    }
+
+
 
     override fun update(id: Long, entity: Invoice): Invoice? {
         return update(id, entity, exclude = listOf("invoiceDetail", "invoiceNo")){
@@ -62,26 +88,17 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
         ApiImplicitParam(name = "customerName",required = false, paramType = "query")
     ])
     fun listInvoiceDTO (@ApiParam(hidden = true) @RequestParam allParams: MutableMap<String, String>): ResponseDTO {
-        val rs = invoiceService.findAllList(allParams)
-        return JSONFormat.respondPage(rs)
+        //val rs = invoiceService.findAllList(allParams)
+        return JSONFormat.respondPage(Page.empty())
+    }
+
+
+    override fun baseListCriteria(allParams: Map<String, String>): ResponseDTO {
+        println("me dirce override form base controller")
+        return super.baseListCriteria(allParams)
     }
 
 
 
-    @GetMapping("/throw")
-    fun testThrow(@RequestParam i : Long): ResponseDTO {
 
-        if (i == 10L) {
-            invoiceService.testThrow(10)
-        }
-        else if (i == 20L){
-            throw RuntimeException("I can't not be negative")
-        }
-
-        else if (i == 30L){
-            throw NotFoundException("custom not found exp")
-        }
-
-        return JSONFormat.respondDynamic("OK",  HttpStatus.OK, HttpStatus.OK.reasonPhrase , 0 )
-    }
 }

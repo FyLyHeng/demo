@@ -36,7 +36,12 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     private lateinit var ResponseDTO : ResponseDTO
 
     /**
+     * @USING : For Handle all the INTERNAL_SERVER_ERROR
      *
+     * @return RespondDTO Format
+     *      message     : detail error message
+     *      code        : default header HttpStatus
+     *      error       : default header HttpStatus
      */
     @ExceptionHandler(Exception::class)
     fun handleAllExceptions( ex: Exception,  request:WebRequest) : ResponseEntity<Any>{
