@@ -29,8 +29,13 @@ class ItemController(
 
 
     override fun create(entity: Item): ResponseDTO {
-        entity.name = "liza"
-        return super.create(entity)
+        val data = super.create(entity) {
+            it.name  = "liza"
+        }
+
+        //return JSONFormat.respondObj(data)
+        return JSONFormat.respondID(data)
+
     }
 
     override fun afterSaved(entity: Item) {

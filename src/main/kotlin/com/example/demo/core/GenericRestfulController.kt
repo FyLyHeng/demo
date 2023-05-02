@@ -54,9 +54,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     open fun create(@RequestBody entity: T): ResponseDTO {
 
         this.beforeSave(entity)
-
-        val obj = repo?.save(create(entity) {})!!
-
+        val obj = create(entity) {}
         this.afterSaved(obj)
         return JSONFormat.respondID(obj)
     }
@@ -187,6 +185,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     open fun create(entity: T, customFields: (targetOBJ:T)-> Unit = {}):T{
         customFields(entity)
+        repo?.save(entity)
         return entity
     }
 

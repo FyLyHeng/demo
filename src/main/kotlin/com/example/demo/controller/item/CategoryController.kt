@@ -1,25 +1,23 @@
 package com.example.demo.controller.item
 
 import com.example.demo.core.GenericRestfulController
+import com.example.demo.core.Slf4k
+import com.example.demo.core.Slf4k.Companion.log
 import com.example.demo.core.responseFormat.response.ResponseDTO
 import com.example.demo.model.item.Category
 import com.example.demo.utilities.AppConstant
-import lombok.extern.slf4j.Slf4j
-import org.springframework.data.domain.Page
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Slf4j
+
+@Slf4k
 @RestController
 @RequestMapping(AppConstant.MAIN_PATH+"/category")
 class CategoryController : GenericRestfulController<Category>(resource = Category::class.java, allowUpdate = true, allowDelete = true) {
 
-    private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun afterSaved(entity: Category) {
-        logger.info("")
+        log.info("")
         println("After save Success we can do any process with the created OBJ")
     }
 
