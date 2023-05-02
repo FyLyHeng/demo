@@ -62,13 +62,9 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     @PostMapping("/multi")
     open fun createMulti(@RequestBody entities: MutableList<T>): ResponseDTO {
 
-        entities.forEach {
-            validateFields(it)
-            utilService.setValueToField(it, FIELD_CUSTOM_STATUS,DEFAULT_CUSTOMSTATUS)
-        }
+        val data = this.createMulti(entities.toList())
 
-
-        return JSONFormat.respondID(repo?.saveAll(entities))
+        return JSONFormat.respondID(repo?.saveAll(data))
     }
 
 
@@ -133,16 +129,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     @GetMapping(AppConstant.ALL_PATH)
     open fun all(@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
-
-        val params = DefaultFilter(allParams.toMutableMap())
-
-        val data = repo?.findAll ({ root, _, cb ->
-            val predicates = ArrayList<Predicate>()
-
-            this.defaultFilterFields(predicates,cb,root, allParams)
-            cb.and(*predicates.toTypedArray())
-
-        }, Sort.by(params.sortDirection,params.orderBy))
+        val data = allDynamicFilter(allParams){ _, _, _ -> }
 
         return JSONFormat.respondList(data)
 
@@ -151,7 +138,9 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     @GetMapping(AppConstant.LIST_PATH)
     open fun list(@RequestParam allParams: Map<String, String>): ResponseDTO {
-        return JSONFormat.respondPage(listCriteria(allParams))
+        val data = listCriteria(allParams)
+
+        return JSONFormat.respondPage(data)
     }
 
 
@@ -170,7 +159,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     @PutMapping(AppConstant.UPDATE_STATUS_PATH +"/{id}/{customStatus}")
     fun updateCustomStatus(@PathVariable id : Long, @PathVariable customStatus : String) : ResponseDTO {
-        val obj = updateStatus(id,customStatus)
+        val obj = updateStatus(id,FIELD_CUSTOM_STATUS,customStatus)
         return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
@@ -267,45 +256,42 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
 
     fun updateStatusToSubmit(id: Long): T {
-        val obj = getById(id)!!
-        utilService.setValueToField(obj,FIELD_CUSTOM_STATUS,AppConstant.SUBMIT)
-        return obj
+
+        return updateStatus(id, FIELD_CUSTOM_STATUS,AppConstant.SUBMIT)
     }
-    fun updateStatusToSubmit(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, postGL: (targetObj: T) -> Unit = {}): T {
-        val obj = getById(id)!!
-        utilService.setValueToField(obj,fieldName,AppConstant.SUBMIT)
-        postGL(obj)
+    fun updateStatusToSubmit(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, customFields: (targetObj: T) -> Unit = {}): T {
+
+        val obj = updateStatus(id, fieldName,AppConstant.SUBMIT)
+        customFields(obj)
         return obj
     }
 
 
     fun updateStatusToCancel(id: Long): T {
-        val obj = getById(id)!!
-        utilService.setValueToField(obj,FIELD_CUSTOM_STATUS,AppConstant.CANCEL)
-        return obj
-    }
-    fun updateStatusToCancel(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, postGL: (targetObj: T) -> Unit = {}): T {
-        val obj = getById(id)!!
-        utilService.setValueToField(obj,fieldName,AppConstant.CANCEL)
-        postGL(obj)
-        return obj
-    }
 
-    fun updateStatus(id: Long, customStatus: String): T {
-        val obj = getById(id)!!
-        utilService.setValueToField(obj,FIELD_CUSTOM_STATUS,customStatus)
+        return updateStatus(id, FIELD_CUSTOM_STATUS,AppConstant.CANCEL)
+    }
+    fun updateStatusToCancel(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, customFields: (targetObj: T) -> Unit = {}): T {
+
+        val obj = updateStatus(id, fieldName,AppConstant.CANCEL)
+        customFields(obj)
         return obj
     }
 
 
+    fun updateStatus(id: Long, fieldName: String, customStatus: String): T {
+        val obj = getById(id)!!
+        utilService.setValueToField(obj,fieldName,customStatus)
+        return obj
+    }
 
     fun getById(id: Long): T? {
         return repo?.findById(id)?.orElseThrow { notFound(id) }
     }
-
     fun listByIds(listEntityID : List<Long>, status:Boolean): MutableList<T>? {
         return repo?.findAllByIdInAndStatus(listEntityID,status)
     }
+
 
     fun allDynamicFilter(allParams: MutableMap<String, String>,addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit): MutableList<T>? {
         val params = DefaultFilter(allParams.toMutableMap())
@@ -319,6 +305,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
             cb.and(*predicates.toTypedArray())
         }, Sort.by(params.sortDirection,params.orderBy))
     }
+
 
 
     fun listCriteria(allParams: Map<String, String>): Page<T>? {
