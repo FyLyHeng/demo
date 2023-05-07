@@ -8,6 +8,7 @@ import com.example.demo.utilities.UtilService
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.annotation.Primary
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -18,12 +19,15 @@ import javax.persistence.criteria.Predicate
 @Slf4j
 @Service
 @Qualifier("invV1")
+@Primary
 class InvoiceServiceImp : InvoiceService {
 
     @Autowired
     lateinit var invoiceRepository: InvoiceRepository
+
     @Autowired
-    lateinit var invDetailRepo : InvoiceDetailRepository
+    lateinit var invDetailRepo: InvoiceDetailRepository
+
     @Autowired
     lateinit var utilService: UtilService
 
@@ -33,39 +37,47 @@ class InvoiceServiceImp : InvoiceService {
      * @allow doing custom DTO for collect only the needed fields for return.
      * @return Page of custom DTO format
      */
-    fun findAllList (allParams:Map<String,String>?): Page<InvoiceDTO> {
+    override fun findAllList(allParams: Map<String, String>?): Page<InvoiceDTO> {
 
         val customName = allParams?.get("customerName")
         val invoiceNo = allParams?.get("invoiceNo")
 
-        val page = allParams?.get("page")?.toInt() ?:0
-        val size = allParams?.get("size")?.toInt() ?:10
+        val page = allParams?.get("page")?.toInt() ?: 0
+        val size = allParams?.get("size")?.toInt() ?: 10
 
-        return invoiceRepository.findAll({ root, query, cb ->
-            val predicates = ArrayList<Predicate>()
-            customName?.let{
-                val cusId = cb.like(root.get("customerName"), "%${it.trim().toUpperCase()}%")
-                predicates.add(cusId)
-            }
+        return invoiceRepository.findAll(
 
-            invoiceNo?.let {
-                val saleSeries = cb.like(root.get("invoiceNo"), "%${it.trim().toUpperCase()}%")
-                predicates.add(saleSeries)
-            }
+            //This block of code is all about filter condition for find data
+            { root, query, cb ->
+                val predicates = ArrayList<Predicate>()
+                customName?.let {
+                    val cusId = cb.like(root.get("customerName"), "%${it.trim().toUpperCase()}%")
+                    predicates.add(cusId)
+                }
 
-            predicates.add(cb.isTrue(root.get("status")))
-            query.orderBy(cb.asc(root.get<String>("id")))
-            cb.and(*predicates.toTypedArray())
-        },
+                invoiceNo?.let {
+                    val saleSeries = cb.like(root.get("invoiceNo"), "%${it.trim().toUpperCase()}%")
+                    predicates.add(saleSeries)
+                }
+
+                predicates.add(cb.isTrue(root.get("status")))
+                query.orderBy(cb.asc(root.get<String>("id")))
+                cb.and(*predicates.toTypedArray())
+            },
+
+            //Transform Entity Class to DTO format.
             InvoiceDTO::class.java,
-            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")))
+
+            //Apply limit offset to above filter condition
+            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
+        )
     }
 
 
     /**
      * @sample : Update Object by write hard-code
      */
-    fun updateOBJ (id:Long, invoice: Invoice) {
+    fun updateOBJ(id: Long, invoice: Invoice) {
         val inv = invoiceRepository.getOne(id)
 
         inv.customerName = invoice.customerName
@@ -78,11 +90,10 @@ class InvoiceServiceImp : InvoiceService {
     }
 
 
-
     /**
      * @sample : Update Object by using BindProperties
      */
-    fun updateOBJWithBindProperties (id:Long, invoice: Invoice){
+    fun updateOBJWithBindProperties(id: Long, invoice: Invoice) {
         val inv = invoiceRepository.getOne(id)
         utilService.bindProperties(invoice, inv)
         invoiceRepository.save(inv)
@@ -99,13 +110,13 @@ class InvoiceServiceImp : InvoiceService {
      *      inv.invoiceDetail?.addAll()
      */
 
-    fun updateObj (id:Long, invoice: Invoice) {
+    fun updateObj(id: Long, invoice: Invoice) {
         val inv = invoiceRepository.getOne(id)
 
         utilService.bindProperties(invoice, inv, exclude = listOf("invoiceDetail"))
 
         inv.invoiceDetail?.clear()
-        inv.invoiceDetail?.addAll(invoice.invoiceDetail?: listOf())
+        inv.invoiceDetail?.addAll(invoice.invoiceDetail ?: listOf())
 
         invoiceRepository.save(inv)
     }
@@ -118,7 +129,7 @@ class InvoiceServiceImp : InvoiceService {
      *      hard-code check condition
      */
 
-    fun updateObjOldStyle (id:Long, invoice: Invoice) {
+    fun updateObjOldStyle(id: Long, invoice: Invoice) {
         val inv = invoiceRepository.getOne(id)
 
         inv.customerName = invoice.customerName
@@ -132,18 +143,18 @@ class InvoiceServiceImp : InvoiceService {
         invoice.invoiceDetail?.map { detail ->
 
             // Case add Update Child
-            if (detail.id != null){
+            if (detail.id != null) {
                 detail.invoice = inv
                 detail.invoice = invDetailRepo.getOne(detail.id!!).invoice
             }
 
             // Case Add new Child
-            if (detail.id == null){
+            if (detail.id == null) {
                 detail.invoice = inv
             }
 
             //Case Delete Child
-            if (detail.status == false){
+            if (detail.status == false) {
                 invDetailRepo.delete(detail)
             }
         }
@@ -153,7 +164,7 @@ class InvoiceServiceImp : InvoiceService {
         invoiceRepository.save(inv)
     }
 
-    override fun testThrow(i:Long){
+    override fun testThrow(i: Long) {
         throw Exception("test throw form service")
     }
 }

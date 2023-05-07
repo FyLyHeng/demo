@@ -55,8 +55,6 @@
         </encoder>
     </appender>
 
-
-
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_ROOT}/${LOG_FILE_NAME}.log</file>
 
@@ -76,28 +74,28 @@
 
 
 
-    <logger name="com.howtodoinjava.app" level="INFO" additivity="false"><appender-ref ref="ROLLING"/></logger>
+<!--    <logger name="com.howtodoinjava.app" level="INFO" additivity="false"><appender-ref ref="ROLLING"/></logger>-->
 
-    <logger name="org.springframework.web" level="DEBUG"/>
+<!--    <logger name="org.springframework.web" level="INFO"/>-->
 
-    <logger name="com.yahoo.elide.graphql.subscriptions" level="DEBUG"/>
+<!--    <logger name="com.yahoo.elide.graphql.subscriptions" level="DEBUG"/>-->
 
     <!-- Log Hibernate SQL Statements -->
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
-    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+<!--    <logger name="org.hibernate.SQL" level="DEBUG"/>-->
+<!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>-->
 
     <!-- Log JPA Datastore HQL Statements -->
-    <logger name="com.yahoo.elide.core.hibernate.hql.DefaultQueryLogger" level="DEBUG"/>
+<!--    <logger name="com.yahoo.elide.core.hibernate.hql.DefaultQueryLogger" level="DEBUG"/>-->
 
     <!-- Log SQL/JPQL Timings -->
-    <logger name="com.yahoo.elide.core.utils.TimedFunction" level="DEBUG"/>
+<!--    <logger name="com.yahoo.elide.core.utils.TimedFunction" level="DEBUG"/>-->
 
     <!-- Log HTTP Error Explanations -->
-    <logger name="com.yahoo.elide.graphql.QueryRunner" level="DEBUG"/>
-    <logger name="com.yahoo.elide.Elide" level="DEBUG"/>
+<!--    <logger name="com.yahoo.elide.graphql.QueryRunner" level="DEBUG"/>-->
+<!--    <logger name="com.yahoo.elide.Elide" level="DEBUG"/>-->
 
     <!--Log Analytic SQL Queries &ndash;&gt;-->
-    <logger name="com.yahoo.elide.datastores.aggregation.core.Slf4jQueryLogger" level="DEBUG"/>
+<!--    <logger name="com.yahoo.elide.datastores.aggregation.core.Slf4jQueryLogger" level="DEBUG"/>-->
 
 
 

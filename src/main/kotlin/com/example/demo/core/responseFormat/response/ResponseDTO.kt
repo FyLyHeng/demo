@@ -15,5 +15,4 @@ class ResponseDTO(
 ) {
 
     constructor() : this(data=null, code=null, message= null, timestamp=null)
-
 }

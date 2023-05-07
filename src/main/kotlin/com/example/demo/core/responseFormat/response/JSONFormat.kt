@@ -14,12 +14,6 @@ class JSONFormat : ResponseFormat {
     @Autowired
     lateinit var ResponseDTO : ResponseDTO
 
-    init {
-        println("init ${this.toString()}")
-    }
-    fun finalize (){
-        println("destroy ${this.toString()}")
-    }
 
     //Static Member
     companion object {

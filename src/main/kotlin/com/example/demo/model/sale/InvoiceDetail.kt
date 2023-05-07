@@ -19,7 +19,7 @@ data class InvoiceDetail(
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id", insertable = true, updatable = false,nullable = true)
+    @JoinColumn(name = "invoice_id", insertable = true, updatable = true,nullable = true)
     var invoice : Invoice?= null
 
 

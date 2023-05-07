@@ -2,6 +2,7 @@ package com.example.demo.model.sale.dto
 
 
 interface InvoiceDTO {
+
     var invoiceNo:String?
     var customerName:String?
     var grandTotal:Double?

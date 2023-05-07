@@ -1,46 +1,56 @@
 package com.example.demo.core
 
 import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
+import com.example.demo.core.responseFormat.response.JSONFormat
+import com.example.demo.core.responseFormat.response.ResponseDTO
 import com.example.demo.service.setting.DocumentSettingServiceImpl
 import com.example.demo.utilities.AppConstant
 import com.example.demo.utilities.UtilService
-import com.example.demo.core.responseFormat.response.JSONFormat
-import com.example.demo.core.responseFormat.response.ResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.lang.reflect.ParameterizedType
 import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
+import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
+import kotlin.collections.ArrayList
 
-abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : DefaultFilter() {
+abstract class GenericRestfulController<T : BaseEntity>() : DefaultFilter() {
 
     @Autowired
-    lateinit var JSONFormat : JSONFormat
+    lateinit var JSONFormat: JSONFormat
+
     @Autowired
     protected val repo: BaseRepository<T>? = null
+
     @Autowired
     lateinit var utilService: UtilService
+
     @Autowired
     lateinit var documentSettingService: DocumentSettingServiceImpl
 
+    private var isAllowDelete: Boolean? = true
+    private var isAllowUpdate: Boolean? = true
+    private var isAllowMultiProcess: Boolean? = false
+    private var resourceName: String? = null
 
-    constructor(resource: Class<T>,allowUpdate: Boolean?=true, allowDelete:Boolean?=true, allowMultiProcess:Boolean?=false) : this(resource) {
+    constructor(
+        allowUpdate: Boolean? = true,
+        allowDelete: Boolean? = true,
+        allowMultiProcess: Boolean? = false,
+    ) : this() {
         this.isAllowDelete = allowDelete
         this.isAllowUpdate = allowUpdate
         this.isAllowMultiProcess = allowMultiProcess
+        this.resourceName = this.getGenericTypeClass()?.simpleName
     }
-
-    private var isAllowDelete : Boolean?=true
-    private var isAllowUpdate : Boolean?=true
-    private var isAllowMultiProcess : Boolean?=false
-    private var resourceName: String? = resource.javaClass.simpleName
-
 
 
     /**
@@ -83,7 +93,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     }
 
     @PutMapping("/multi")
-    open fun updateMulti( @RequestBody entities: MutableList<T>): ResponseDTO {
+    open fun updateMulti(@RequestBody entities: MutableList<T>): ResponseDTO {
 
         val listOfObj = updateMulti(entities, null, null)
 
@@ -98,7 +108,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
         this.checkAllowModify()
         try {
             repo?.deleteById(id)
-        } catch (ex: EmptyResultDataAccessException){
+        } catch (ex: EmptyResultDataAccessException) {
             notFound(id)
         }
 
@@ -106,13 +116,13 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     }
 
     @PutMapping("/delete")
-    open fun softDelete(@RequestBody listEntity: MutableList<T>) : ResponseDTO {
+    open fun softDelete(@RequestBody listEntity: MutableList<T>): ResponseDTO {
 
-        val listEntityID = listEntity.map { utilService.getValueFromField(it,"id")?.toLong()!! }
+        val listEntityID = listEntity.map { utilService.getValueFromField(it, "id")?.toLong()!! }
 
         val result = listByIds(listEntityID, true)
 
-        result?.getOrElse(0){ throw NotFoundException( "ids doesn't exists") }
+        result?.getOrElse(0) { throw NotFoundException("ids doesn't exists") }
 
         result?.forEach { it.status = false }
         val data = repo!!.saveAll(result!!)
@@ -129,7 +139,7 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     @GetMapping(AppConstant.ALL_PATH)
     open fun all(@RequestParam allParams: MutableMap<String, String>): ResponseDTO {
-        val data = allDynamicFilter(allParams){ _, _, _ -> }
+        val data = allDynamicFilter(allParams) { _, _, _ -> }
 
         return JSONFormat.respondList(data)
 
@@ -139,30 +149,27 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
     @GetMapping(AppConstant.LIST_PATH)
     open fun list(@RequestParam allParams: Map<String, String>): ResponseDTO {
         val data = listCriteria(allParams)
-
         return JSONFormat.respondPage(data)
     }
 
 
-    @PutMapping(AppConstant.UPDATE_SUBMIT_PATH +"/{id}")
+    @PutMapping(AppConstant.UPDATE_SUBMIT_PATH + "/{id}")
     open fun updateToSubmit(@PathVariable id: Long): ResponseDTO {
         val obj = this.updateStatusToSubmit(id)
         return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
-
-    @PutMapping(AppConstant.UPDATE_CANCEL_PATH +"/{id}")
+    @PutMapping(AppConstant.UPDATE_CANCEL_PATH + "/{id}")
     open fun updateToCancel(@PathVariable id: Long): ResponseDTO {
         val obj = updateStatusToCancel(id)
         return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
 
-    @PutMapping(AppConstant.UPDATE_STATUS_PATH +"/{id}/{customStatus}")
-    fun updateCustomStatus(@PathVariable id : Long, @PathVariable customStatus : String) : ResponseDTO {
-        val obj = updateStatus(id,FIELD_CUSTOM_STATUS,customStatus)
+    @PutMapping(AppConstant.UPDATE_STATUS_PATH + "/{id}/{customStatus}")
+    fun updateCustomStatus(@PathVariable id: Long, @PathVariable customStatus: String): ResponseDTO {
+        val obj = updateStatus(id, FIELD_CUSTOM_STATUS, customStatus)
         return JSONFormat.respondCustomStatus(repo?.save(obj))
     }
-
 
 
 //================================================================================================
@@ -172,65 +179,91 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
      *
      */
 
-    open fun create(entity: T, customFields: (targetOBJ:T)-> Unit = {}):T{
+    open fun create(entity: T, customFields: (targetOBJ: T) -> Unit = {}): T {
         customFields(entity)
-        repo?.save(entity)
-        return entity
+        return repo?.save(entity)!!
     }
 
-    open fun afterSaved(entity: T){}
-    open fun afterUpdated(entity: T){}
+    open fun afterSaved(entity: T) {}
+    open fun afterUpdated(entity: T) {}
 
 
     @Throws(Exception::class)
-    open fun beforeSave(entity:T) {
-        validateFields(entity)
+    open fun beforeSave(entity: T) {
+        validate(entity)
     }
-    open fun beforeUpdate(entity:T) {
-        validateFields(entity)
+
+    open fun beforeUpdate(entity: T) {
+        validate(entity)
     }
 
 
-    fun createMulti (entities : List<T>) : List<T> {
+    fun createMulti(entities: List<T>): List<T> {
         entities.forEach {
-            validateFields(it)
-            utilService.setValueToField(it, FIELD_CUSTOM_STATUS,DEFAULT_CUSTOMSTATUS)
+            validate(it)
+            utilService.setValueToField(it, FIELD_CUSTOM_STATUS, DEFAULT_CUSTOMSTATUS)
         }
         return entities
     }
 
-    fun createMulti (entities : List<T>, customFields: (targetObj: T) -> Unit = {}) : List<T> {
+    fun createMulti(entities: List<T>, customFields: (targetObj: T) -> Unit = {}): List<T> {
         entities.forEach {
-            validateFields(it)
-            utilService.setValueToField(it, FIELD_CUSTOM_STATUS,DEFAULT_CUSTOMSTATUS)
+            validate(it)
+            utilService.setValueToField(it, FIELD_CUSTOM_STATUS, DEFAULT_CUSTOMSTATUS)
             customFields(it)
         }
         return entities
     }
 
 
+    /**
+     * Basic Update function using for update Entity base on ID
+     * @param id
+     */
     fun update(id: Long, entity: T): T {
 
-        val obj= this.getById(id)!!
+        val obj = this.getById(id)!!
         utilService.bindProperties(entity, obj)
         return obj
     }
 
-    fun update(id: Long, entity: T, include: List<String>? = null, exclude: List<String>? = null): T {
-        val obj= this.getById(id)!!
-        utilService.bindProperties(entity, obj, include = include, exclude = exclude)
 
-        return obj
-    }
-    fun update(id: Long, entity: T, include: List<String>? = null, exclude: List<String>? = null, customChild: (targetObj: T) -> Unit = {}): T {
+    /**
+     *
+     * Update function with include and exclude parameter using for update Entity base on ID
+     * @param fieldsProtected = list of Entity fields that use for ignore to update those fields
+     *
+     */
+    fun update(id: Long, entity: T, fieldsProtected: List<String>? = null): T {
         val obj = this.getById(id)!!
-        utilService.bindProperties(entity, obj, include = include, exclude = exclude)
-        customChild(obj)
+        utilService.bindProperties(entity, obj, include = null, exclude = fieldsProtected)
+
         return obj
     }
 
 
-    fun updateMulti(entities: MutableList<T>, include: List<String>? = null, exclude: List<String>? = null): List<T>{
+    /**
+     *
+     * Update function with fieldsProtected parameter and customFields Lambda block using for update Entity base on ID
+     * @param id = is a unit ID of Entity using for find record in DB for update
+     * @param fieldsProtected = list of Entity fields that use for ignore to update those fields
+     * @param customFields = is a Lambda block for Open to Client to Customize logic with the existing targetObj
+     *
+     */
+    fun update(
+        id: Long,
+        entity: T,
+        fieldsProtected: List<String>? = null,
+        customFields: (targetObj: T) -> Unit = {},
+    ): T {
+        val obj = this.getById(id)!!
+        utilService.bindProperties(entity, obj, include = null, exclude = fieldsProtected)
+        customFields(obj)
+        return obj
+    }
+
+
+    fun updateMulti(entities: MutableList<T>, include: List<String>? = null, exclude: List<String>? = null): List<T> {
         val listOfObj = mutableListOf<T>()
         entities.forEach {
             val id = utilService.getValueFromField(it, "id")?.toLong()!!
@@ -241,14 +274,20 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
         return listOfObj
     }
 
-    fun updateMulti(entities: MutableList<T>, include: List<String>? = null, exclude: List<String>? = null, customChild: (targetObj: T) -> Unit = {}): List<T>{
+
+    fun updateMulti(
+        entities: MutableList<T>,
+        include: List<String>? = null,
+        exclude: List<String>? = null,
+        customFields: (targetObj: T) -> Unit = {},
+    ): List<T> {
         val listOfObj = mutableListOf<T>()
         entities.forEach {
             val id = utilService.getValueFromField(it, "id")?.toLong()!!
             val obj = this.getById(id)!!
             utilService.bindProperties(it, obj, include, exclude)
 
-            customChild(obj)
+            customFields(obj)
             listOfObj.add(obj)
         }
         return listOfObj
@@ -257,11 +296,16 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     fun updateStatusToSubmit(id: Long): T {
 
-        return updateStatus(id, FIELD_CUSTOM_STATUS,AppConstant.SUBMIT)
+        return updateStatus(id, FIELD_CUSTOM_STATUS, AppConstant.SUBMIT)
     }
-    fun updateStatusToSubmit(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, customFields: (targetObj: T) -> Unit = {}): T {
 
-        val obj = updateStatus(id, fieldName,AppConstant.SUBMIT)
+    fun updateStatusToSubmit(
+        id: Long,
+        fieldName: String = FIELD_CUSTOM_STATUS,
+        customFields: (targetObj: T) -> Unit = {},
+    ): T {
+
+        val obj = updateStatus(id, fieldName, AppConstant.SUBMIT)
         customFields(obj)
         return obj
     }
@@ -269,11 +313,16 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     fun updateStatusToCancel(id: Long): T {
 
-        return updateStatus(id, FIELD_CUSTOM_STATUS,AppConstant.CANCEL)
+        return updateStatus(id, FIELD_CUSTOM_STATUS, AppConstant.CANCEL)
     }
-    fun updateStatusToCancel(id: Long, fieldName: String = FIELD_CUSTOM_STATUS, customFields: (targetObj: T) -> Unit = {}): T {
 
-        val obj = updateStatus(id, fieldName,AppConstant.CANCEL)
+    fun updateStatusToCancel(
+        id: Long,
+        fieldName: String = FIELD_CUSTOM_STATUS,
+        customFields: (targetObj: T) -> Unit = {},
+    ): T {
+
+        val obj = updateStatus(id, fieldName, AppConstant.CANCEL)
         customFields(obj)
         return obj
     }
@@ -281,98 +330,134 @@ abstract class GenericRestfulController<T : BaseEntity>(resource: Class<T>) : De
 
     fun updateStatus(id: Long, fieldName: String, customStatus: String): T {
         val obj = getById(id)!!
-        utilService.setValueToField(obj,fieldName,customStatus)
+        utilService.setValueToField(obj, fieldName, customStatus)
         return obj
     }
 
     fun getById(id: Long): T? {
         return repo?.findById(id)?.orElseThrow { notFound(id) }
     }
-    fun listByIds(listEntityID : List<Long>, status:Boolean): MutableList<T>? {
-        return repo?.findAllByIdInAndStatus(listEntityID,status)
+
+    fun listByIds(listEntityID: List<Long>, status: Boolean): MutableList<T>? {
+        return repo?.findAllByIdInAndStatus(listEntityID, status)
     }
 
 
-    fun allDynamicFilter(allParams: MutableMap<String, String>,addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit): MutableList<T>? {
+    fun allDynamicFilter(
+        allParams: MutableMap<String, String>,
+        addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit,
+    ): MutableList<T>? {
         val params = DefaultFilter(allParams.toMutableMap())
-
-        return repo?.findAll ({ root, _, cb ->
-            val predicates = ArrayList<Predicate>()
-
-            defaultFilterFields(predicates,cb,root, allParams)
-            addOnFilters(predicates,cb,root)
-
-            cb.and(*predicates.toTypedArray())
-        }, Sort.by(params.sortDirection,params.orderBy))
-    }
-
-
-
-    fun listCriteria(allParams: Map<String, String>): Page<T>? {
-        val params = DefaultFilter(allParams.toMutableMap())
-
-
-        return repo?.findAll({ root, _, cb ->
-
-            val predicates = ArrayList<Predicate>()
-            this.defaultFilterFields(predicates, cb, root, allParams)
-
-            cb.and(*predicates.toTypedArray())
-        }, PageRequest.of(params.page, params.size, Sort.by(params.sortDirection, params.orderBy)))
-    }
-    fun listCriteria(allParams: Map<String, String>, addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit):Page<T>? {
-
-        val params = DefaultFilter(allParams.toMutableMap())
-
 
         return repo?.findAll({ root, _, cb ->
             val predicates = ArrayList<Predicate>()
 
-            defaultFilterFields(predicates,cb, root, allParams)
             addOnFilters(predicates, cb, root)
 
             cb.and(*predicates.toTypedArray())
+        }, Sort.by(params.sortDirection, params.orderBy))
+    }
+
+
+    fun listCriteria(allParams: Map<String, String>): Page<T>? {
+
+        val params = super.applyDefaultPaging(allParams)
+
+        return repo?.findAll({ root, _, cb ->
+
+            val predicates = ArrayList<Predicate>()
+            cb.and(*predicates.toTypedArray())
         }, PageRequest.of(params.page, params.size, Sort.by(params.sortDirection, params.orderBy)))
     }
 
+    fun listCriteria(
+        allParams: Map<String, String>,
+        addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit,
+    ): Page<T>? {
+
+        val params = super.applyDefaultPaging(allParams)
+
+        return repo?.findAll({ root, _, cb ->
+            val predicates = ArrayList<Predicate>()
+
+            addOnFilters(predicates, cb, root)
+
+            cb.and(*predicates.toTypedArray())// * is a function use for convert list or array to Varargs type.
+        }, PageRequest.of(params.page, params.size, Sort.by(params.sortDirection, params.orderBy)))
+    }
+
+
+    @GetMapping(AppConstant.LIST_DTO_PATH)
+
+    open fun <R : Any> listCriteriaWithProjection(@RequestParam allParams: Map<String, String>, customDto: Class<R>) : ResponseDTO{
+        val data = this.listCriteriaWithProjection(allParams, customDto) { _, _, _ -> }
+        return JSONFormat.respondPage(data)
+    }
+
+    fun <R : Any> listCriteriaWithProjection(allParams: Map<String, String>, customDto: Class<R>, addOnFilters: (predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>) -> Unit, ): Page<R>? {
+
+        val search = Specification { root: Root<T>, _: CriteriaQuery<*>?, cb: CriteriaBuilder ->
+
+            val predicates = ArrayList<Predicate>()
+            addOnFilters(predicates, cb, root)
+            cb.and(*predicates.toTypedArray())// * is a function use for convert list or array to Varargs type.
+        }
+
+
+        val defaultPaging = super.applyDefaultPaging(allParams)
+        val paging = PageRequest.of(defaultPaging.page, defaultPaging.size, Sort.by(defaultPaging.sortDirection, defaultPaging.orderBy))
+
+        return repo?.findAll(search, customDto, paging)
+    }
 
 
 //================================================================================================
 
 
-
-    protected fun notFound (id: Long) : NotFoundException {
-        //TODO retrive id without passing vai fun parameter.
-        //val ID = utilService.readInstanceProperty<T>(resource.classes,"id")
+    protected fun notFound(id: Long): NotFoundException {
         throw NotFoundException("$resourceName id $id doesn't exists")
     }
 
-    private fun validateFields(entity: T?) : Boolean {
-        //entity::class.java.declaredFields
+    open fun validate(entity: T?): Boolean {
+        //check files type between income data with Model datatype
         return true
     }
 
-    private fun <T> defaultFilterFields(predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<T>, defaultFilterFields: Map<String, String?>) {
-
-        defaultFilterFields.forEach { (fieldName, value) ->
-
-            when (fieldName){
-                SERIES              -> predicates.add(cb.like(cb.upper(root.get(fieldName)), "%${value.toString().toUpperCase()}%"))
-                ID                  -> predicates.add(cb.equal(root.get<Long>(fieldName), value))
+    private fun checkAllowModify() {
+        when (false) {
+            isAllowDelete -> {
+                JSONFormat.respondObj(
+                    data = null,
+                    status = HttpStatus.NOT_ACCEPTABLE,
+                    "$resourceName : Not Allow to Delete!"
+                )
             }
-        }
-        predicates.add(cb.isTrue(root.get(STATUS)))
-    }
 
-    private fun checkAllowModify(){
-        when (false){
-            isAllowDelete -> {JSONFormat.respondObj(data = null, status = HttpStatus.NOT_ACCEPTABLE,"Delete Method Is Not Allow!")}
-            isAllowUpdate -> {JSONFormat.respondObj(data = null, status = HttpStatus.NOT_ACCEPTABLE,"Update Method Is Not Allow!")}
+            isAllowUpdate -> {
+                JSONFormat.respondObj(
+                    data = null,
+                    status = HttpStatus.NOT_ACCEPTABLE,
+                    "$resourceName : Not Allow to Update!"
+                )
+            }
+
             else -> {}
         }
     }
 
-    private fun checkAllowMultiProcess(){
+    private fun checkAllowMultiProcess() {
 
     }
+
+    @SuppressWarnings("unchecked")
+    private fun getGenericTypeClass(): Class<T>? {
+        return try {
+            val className: String = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0].typeName
+            val clazz = Class.forName(className)
+            clazz as Class<T>
+        } catch (e: java.lang.Exception) {
+            throw IllegalStateException("Class is not parametrized with generic type!!! Please use extends <> ")
+        }
+    }
+
 }

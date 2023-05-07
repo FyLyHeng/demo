@@ -33,7 +33,7 @@ class TestController {
     @PostMapping
     fun post (@RequestBody invoice: Invoice): ResponseEntity<Invoice> {
 
-        if (invoice.customerName.length>1){
+        if (invoice.customerName?.length!!>1){
             throw NotAcceptableException("Customer name are too long")
         }
 

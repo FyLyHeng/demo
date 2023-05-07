@@ -1,6 +1,8 @@
 package com.example.demo.core
 
 import org.springframework.data.domain.Sort
+import org.springframework.stereotype.Component
+import java.util.*
 
 open class DefaultFilter() {
 
@@ -42,7 +44,20 @@ open class DefaultFilter() {
         this.page = allParams[PAGE]?.toInt() ?: defaultPage
         this.size = allParams[SIZE]?.toInt() ?: defaultSize
         this.orderBy = allParams[ORDER_BY] ?: defaultOrderBy
-        this.sort = allParams[SORT]?.toUpperCase()?:defaultSort
+        this.sort = allParams[SORT]?.uppercase(Locale.getDefault()) ?:defaultSort
         this.sortDirection = Sort.Direction.valueOf(sort)
+    }
+
+    fun applyDefaultPaging(allParams: Map<String, String>): DefaultFilter {
+        this.page = allParams[PAGE]?.toInt() ?: defaultPage
+        this.size = allParams[SIZE]?.toInt() ?: defaultSize
+        this.orderBy = allParams[ORDER_BY] ?: defaultOrderBy
+        this.sort = allParams[SORT]?.uppercase(Locale.getDefault()) ?:defaultSort
+        this.sortDirection = Sort.Direction.valueOf(sort)
+        return this
+    }
+
+    fun getDefaultPaging() : DefaultFilter {
+        return this
     }
 }

@@ -85,6 +85,11 @@
 			<version>2.3.12.RELEASE</version>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.dataformat</groupId>-->
+<!--			<artifactId>jackson-dataformat-xml</artifactId>-->
+<!--		</dependency>-->
+
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

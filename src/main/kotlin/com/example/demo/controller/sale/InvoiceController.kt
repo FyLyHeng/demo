@@ -1,35 +1,32 @@
 package com.example.demo.controller.sale
 
 import com.example.demo.core.GenericRestfulController
-import com.example.demo.core.responseFormat.exception.entityExecption.BadRequestException
+import com.example.demo.core.Slf4k
+import com.example.demo.core.Slf4k.Companion.log
 import com.example.demo.core.responseFormat.exception.entityExecption.NotFoundException
-import com.example.demo.model.sale.Invoice
+import com.example.demo.core.responseFormat.exception.generalException.NotAcceptableException
 import com.example.demo.core.responseFormat.response.ResponseDTO
+import com.example.demo.model.sale.Invoice
+import com.example.demo.model.sale.dto.InvoiceDTO
 import com.example.demo.service.sale.InvoiceService
-import com.example.demo.service.sale.InvoiceServiceImp
 import com.example.demo.service.stock.StockTransactionServiceImp
 import com.example.demo.utilities.AppConstant
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
-import io.swagger.annotations.ApiParam
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
+@Slf4k
 @RestController
 @RequestMapping(AppConstant.MAIN_PATH+"/invoice")
-class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java){
+class InvoiceController : GenericRestfulController<Invoice>(allowUpdate = false, allowDelete = false){
 
     @Autowired
     lateinit var stockTransactionService: StockTransactionServiceImp
 
     @Autowired
-    @Qualifier("invV2")
     lateinit var invoiceService: InvoiceService
 
 
@@ -52,32 +49,31 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
     }
 
 
-    override fun update(id: Long, entity: Invoice?): ResponseDTO {
+    @PutMapping("{id}")
+    override fun update(@PathVariable(value = "id") id: Long, @RequestBody entity: Invoice?): ResponseDTO {
 
-        val data = update(id, entity!!, exclude = listOf("invoiceDetail", "invoiceNo")){
+        val data = update(id, entity!!, fieldsProtected = listOf("invoiceNo","invoiceDetail")) {
             it.invoiceDetail?.clear()
-            it.invoiceDetail?.addAll(entity.invoiceDetail!!)
+            it.invoiceDetail?.addAll(entity.invoiceDetail?: listOf())
         }
 
-        return JSONFormat.respondID(data)
+        return JSONFormat.respondObj(data)
     }
 
 
+    override fun create(entity: Invoice, customFields: (targetOBJ: Invoice) -> Unit): Invoice {
 
-    override fun create(entity: Invoice): ResponseDTO {
-        val data = create(entity){
-            it.invoiceNo = documentSettingService.getNextSeries("invoice")
+        val data = super.create(entity) { invoice->
+            invoice.invoiceNo = "inv-000001"
+            invoice.date = Date()
         }
-
-        return JSONFormat.respondID(data)
+        return data
     }
 
 
     override fun beforeSave(entity: Invoice) {
-        try {
-            super.beforeSave(entity)
-        }catch (e : BadRequestException){
-            throw e
+        if (entity.customerName == null){
+            throw NotAcceptableException("Customer name Can Not Be Null")
         }
     }
 
@@ -89,20 +85,34 @@ class InvoiceController : GenericRestfulController<Invoice>(Invoice::class.java)
         }
     }
 
+
+    override fun list(@RequestParam allParams: Map<String, String>): ResponseDTO {
+        log.info("params _${allParams.entries}")
+        return super.list(allParams)
+    }
+
+
+//    @GetMapping(AppConstant.LIST_DTO_PATH)
+//    @ApiImplicitParams(value = [
+//        ApiImplicitParam(name = "customerId", required = false, paramType = "query"),
+//        ApiImplicitParam(name = "customerName",required = false, paramType = "query")
+//    ])
+//    override fun <R : Any> listCriteriaWithProjection(@RequestParam allParams: Map<String, String>, customDto: Class<R>): ResponseDTO {
+//
+//        val data = super.listCriteriaWithProjection(allParams, InvoiceDTO::class.java){
+//            predicates: ArrayList<Predicate>, cb: CriteriaBuilder, root: Root<Invoice> ->
+//
+//        }
+//
+//        return JSONFormat.respondPage(data)
+//    }
+
     @GetMapping(AppConstant.LIST_DTO_PATH)
     @ApiImplicitParams(value = [
         ApiImplicitParam(name = "customerId", required = false, paramType = "query"),
         ApiImplicitParam(name = "customerName",required = false, paramType = "query")
     ])
-    fun listInvoiceDTO (@ApiParam(hidden = true) @RequestParam allParams: MutableMap<String, String>): ResponseDTO {
-        //val rs = invoiceService.findAllList(allParams)
-        return JSONFormat.respondPage(Page.empty())
+    override fun <R : Any> listCriteriaWithProjection( @RequestParam allParams: Map<String, String>, customDto: Class<R>): ResponseDTO {
+        return super.listCriteriaWithProjection(allParams, InvoiceDTO::class.java)
     }
-
-
-    override fun list(allParams: Map<String, String>): ResponseDTO {
-        println("me dirce override form base controller")
-        return super.list(allParams)
-    }
-
 }

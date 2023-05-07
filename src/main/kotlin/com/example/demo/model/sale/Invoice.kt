@@ -10,11 +10,11 @@ data class Invoice(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id:Long?,
     var invoiceNo:String?=null,
-    var date: Date,
-    var customerName:String,
-    var subTotal:Double,
+    var date: Date?,
+    var customerName:String?,
+    var subTotal:Double?,
     var grandTotal:Double=0.0,
-    var vatAmount:Double,
+    var vatAmount:Double?,
 
 
     @OneToMany(

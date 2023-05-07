@@ -54,6 +54,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = message
             this.error = status.reasonPhrase
             this.timestamp = Date()
+            this.total = null
         }
         this.logger.error(message)
         return ResponseEntity(body,status)
@@ -88,6 +89,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = status.reasonPhrase
             this.error = errors
             this.timestamp = Date()
+            this.total = null
         }
 
         this.logger.error(errors)
@@ -114,6 +116,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = status.reasonPhrase
             this.error = errors
             this.timestamp = Date()
+            this.total = null
         }
 
         this.logger.error(errors)
@@ -139,6 +142,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = status.reasonPhrase
             this.error = errors
             this.timestamp = Date()
+            this.total = null
         }
 
         this.logger.error(ex)
@@ -163,6 +167,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = errors
             this.error = null
             this.timestamp = Date()
+            this.total = null
         }
         this.logger.error(ex)
         return ResponseEntity(body, status)
@@ -181,6 +186,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = errors
             this.error = status.reasonPhrase
             this.timestamp = Date()
+            this.total = null
         }
         this.logger.error(ex)
         return ResponseEntity(body, status)
@@ -198,6 +204,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = errors
             this.error = status.reasonPhrase
             this.timestamp = Date()
+            this.total = null
         }
         this.logger.error(ex)
         return ResponseEntity(body, status)
@@ -216,6 +223,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             this.message = errors
             this.error = status.reasonPhrase
             this.timestamp = Date()
+            this.total = null
         }
         this.logger.error(ex)
         return ResponseEntity(body, status)

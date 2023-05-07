@@ -33,7 +33,7 @@ class InvoiceServiceImpV2 : InvoiceService {
      * @allow doing custom DTO for collect only the needed fields for return.
      * @return Page of custom DTO format
      */
-    fun findAllList (allParams:Map<String,String>?): Page<InvoiceDTO> {
+    override fun findAllList (allParams:Map<String,String>?): Page<InvoiceDTO> {
 
         val customName = allParams?.get("customerName")
         val invoiceNo = allParams?.get("invoiceNo")

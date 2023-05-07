@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController
 @Slf4k
 @RestController
 @RequestMapping(AppConstant.MAIN_PATH+"/category")
-class CategoryController : GenericRestfulController<Category>(resource = Category::class.java, allowUpdate = true, allowDelete = true) {
+class CategoryController : GenericRestfulController<Category>(allowUpdate = true, allowDelete = true) {
 
 
     override fun afterSaved(entity: Category) {
-        log.info("")
-        println("After save Success we can do any process with the created OBJ")
+        log.info("After save Success we can do any process with the created OBJ")
     }
 
 

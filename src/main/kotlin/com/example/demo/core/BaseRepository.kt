@@ -8,4 +8,5 @@ import th.co.geniustree.springdata.jpa.repository.JpaSpecificationExecutorWithPr
 @NoRepositoryBean
 interface BaseRepository <T: BaseEntity> : JpaRepository<T,Long>, JpaSpecificationExecutor<T>, JpaSpecificationExecutorWithProjection<T,Long> {
     fun findAllByIdInAndStatus(ids:List<Long>, status:Boolean) : MutableList<T>
+    fun findAllByStatusIsTrue() : MutableList<T>
 }
